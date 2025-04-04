@@ -88,10 +88,10 @@ pub struct CreateWallet {
 pub struct DumpPrivKey(pub PrivateKey);
 
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
-pub struct DumpWallet {
+pub struct DumpWallet(
     /// The filename with full absolute path.
-    pub file_name: String, // FIXME: Should this be `PathBuf`?
-}
+    pub String // FIXME: Should this be `PathBuf`?
+);
 
 /// Models the result of JSON-RPC method `getaddressesbylabel`.
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
@@ -99,10 +99,7 @@ pub struct GetAddressesByLabel(pub BTreeMap<Address<NetworkUnchecked>, AddressIn
 
 /// Information about address.
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
-pub struct AddressInformation {
-    /// Purpose of address.
-    pub purpose: AddressPurpose,
-}
+pub struct AddressInformation(pub AddressPurpose);
 
 /// Models the result of JSON-RPC method `getaddressinfo`.
 // TODO: Support serde (currently not supported by `WitnessProgram` or `WitnessVersion`)
@@ -623,9 +620,7 @@ pub struct SendMany(pub Txid);
 
 /// Models the result of JSON-RPC method `sendtoaddress`.
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
-pub struct SendToAddress {
-    pub txid: Txid,
-}
+pub struct SendToAddress(pub Txid);
 
 /// Models the result of JSON-RPC method `signmessage`.
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
@@ -660,11 +655,10 @@ pub struct SignErrorData {
 ///
 /// Core version v0.21 onwards.
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
-pub struct UnloadWallet {
+pub struct UnloadWallet(
     /// Warning messages, if any, related to unloading the wallet.
-    // Changes from single string to vector in Core v25
-    pub warnings: Vec<String>,
-}
+    pub Vec<String> // Changes from single string to vector in Core v25
+);
 
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 pub struct WalletCreateFundedPsbt {

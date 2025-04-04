@@ -167,11 +167,10 @@ impl DumpPrivKey {
 /// > Arguments:
 /// > 1. "filename"    (string, required) The filename with path (either absolute or relative to bitcoind)
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
-pub struct DumpWallet {
+pub struct DumpWallet (
     /// The filename with full absolute path.
-    #[serde(rename = "filename")]
-    pub file_name: String,
-}
+    pub String,
+);
 
 /// Result of the JSON-RPC method `getaddressesbylabel`.
 ///
@@ -186,10 +185,10 @@ pub struct GetAddressesByLabel(pub BTreeMap<String, AddressInformation>);
 
 /// Returned as part of `getaddressesbylabel`.
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
-pub struct AddressInformation {
+pub struct AddressInformation (
     /// Purpose of address.
-    pub purpose: AddressPurpose,
-}
+    pub AddressPurpose,
+);
 
 /// Result of the JSON-RPC method `getaddressinfo`.
 ///
@@ -879,7 +878,7 @@ pub struct SendToAddress(pub String);
 
 impl SendToAddress {
     /// Converts json straight to a `bitcoin::Txid`.
-    pub fn txid(self) -> Result<Txid, hex::HexToArrayError> { Ok(self.into_model()?.txid) }
+    pub fn txid(self) -> Result<Txid, hex::HexToArrayError> { Ok(self.into_model()?.0) }
 }
 
 /// Result of the JSON-RPC method `signmessage`.

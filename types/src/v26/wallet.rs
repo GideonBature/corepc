@@ -83,14 +83,14 @@ impl LoadWallet {
 /// > 1. wallet_name        (string, optional, default=the wallet name from the RPC endpoint) The name of the wallet to unload. If provided both here and in the RPC endpoint, the two must be identical.
 /// > 2. load_on_startup    (boolean, optional) Save wallet name to persistent settings and load on startup. True to add wallet to startup list, false to remove, null to leave unchanged.
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
-pub struct UnloadWallet {
+pub struct UnloadWallet (
     /// Warning messages, if any, related to loading the wallet.
-    pub warnings: Option<Vec<String>>,
-}
+    pub Option<Vec<String>>,
+);
 
 impl UnloadWallet {
     /// Converts version specific type to a version nonspecific, more strongly typed type.
     pub fn into_model(self) -> model::UnloadWallet {
-        model::UnloadWallet { warnings: self.warnings.unwrap_or_default() }
+        model::UnloadWallet ( self.0.unwrap_or_default() )
     }
 }

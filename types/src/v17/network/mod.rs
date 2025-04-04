@@ -257,4 +257,4 @@ pub struct ListBanned(pub Vec<Banned>);
 
 /// An item from the list returned by the JSON-RPC method `listbanned`
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct Banned(String); // FIXME: The docs are empty so I don't know what shape this is.
+pub struct Banned(pub String); // FIXME: The docs are empty so I don't know what shape this is.

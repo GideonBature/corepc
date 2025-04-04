@@ -156,10 +156,10 @@ pub struct Softfork {
 
 /// Progress toward rejecting pre-softfork blocks.
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
-pub struct SoftforkReject {
+pub struct SoftforkReject(
     /// `true` if threshold reached.
-    pub status: bool,
-}
+    pub bool,
+);
 
 /// Status of BIP-9 softforksin progress.
 #[derive(Clone, PartialEq, Eq, Debug, Deserialize, Serialize)]

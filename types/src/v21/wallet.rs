@@ -15,14 +15,14 @@ use crate::model;
 /// > Unloads the wallet referenced by the request endpoint, otherwise unloads the wallet specified in the argument.
 /// > Specifying the wallet name on a wallet endpoint is invalid.
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
-pub struct UnloadWallet {
+pub struct UnloadWallet (
     /// Warning messages, if any, related to unloading the wallet.
-    pub warning: String,
-}
+    pub String,
+);
 
 impl UnloadWallet {
     /// Converts version specific type to a version nonspecific, more strongly typed type.
     pub fn into_model(self) -> model::UnloadWallet {
-        model::UnloadWallet { warnings: vec![self.warning] }
+        model::UnloadWallet ( vec![self.0] )
     }
 }

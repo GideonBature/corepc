@@ -100,13 +100,13 @@ impl DumpPrivKey {
 
 impl DumpWallet {
     /// Converts version specific type to a version nonspecific, more strongly typed type.
-    pub fn into_model(self) -> model::DumpWallet { model::DumpWallet { file_name: self.file_name } }
+    pub fn into_model(self) -> model::DumpWallet { model::DumpWallet( self.0 ) }
 }
 
 impl AddressInformation {
     /// Converts version specific type to a version nonspecific, more strongly typed type.
     pub fn into_model(self) -> model::AddressInformation {
-        model::AddressInformation { purpose: self.purpose.into_model() }
+        model::AddressInformation (self.0.into_model() )
     }
 }
 
@@ -694,7 +694,7 @@ impl SendToAddress {
     /// Converts version specific type to a version nonspecific, more strongly typed type.
     pub fn into_model(self) -> Result<model::SendToAddress, hex::HexToArrayError> {
         let txid = self.0.parse::<Txid>()?;
-        Ok(model::SendToAddress { txid })
+        Ok(model::SendToAddress ( txid ))
     }
 }
 

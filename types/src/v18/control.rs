@@ -12,9 +12,9 @@ use serde::{Deserialize, Serialize};
 /// >
 /// > Returns details of the RPC server.
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct GetRpcInfo {
-    active_commands: Vec<ActiveCommand>,
-}
+pub struct GetRpcInfo (
+    pub Vec<ActiveCommand>,
+);
 
 /// Information about an active command - return as part of `getrpcinfo`.
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]

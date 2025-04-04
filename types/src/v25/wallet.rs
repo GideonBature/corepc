@@ -110,6 +110,6 @@ pub struct UnloadWallet {
 impl UnloadWallet {
     /// Converts version specific type to a version nonspecific, more strongly typed type.
     pub fn into_model(self) -> model::UnloadWallet {
-        model::UnloadWallet { warnings: self.warnings.unwrap_or_default() }
+        model::UnloadWallet ( self.warnings.unwrap_or_default() )
     }
 }
