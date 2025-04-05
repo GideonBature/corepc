@@ -42,6 +42,7 @@ crate::impl_client_v17__gettxoutproof!();
 crate::impl_client_v26__gettxoutsetinfo!();
 crate::impl_client_v17__preciousblock!();
 crate::impl_client_v17__verifytxoutproof!();
+crate::impl_client_v17__pruneblockchain!();
 
 // == Control ==
 crate::impl_client_v17__getmemoryinfo!();

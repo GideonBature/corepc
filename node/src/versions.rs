@@ -1,7 +1,7 @@
 // An explicit version of Bitcoin Core must be selected by enabling some feature.
 // We check this here instead of in `lib.rs` because this file is included in `build.rs`.
 #[cfg(all(
-    not(feature = "28_0"),
+    feature = "28_0",
     not(feature = "27_2"),
     not(feature = "27_1"),
     not(feature = "27_0"),

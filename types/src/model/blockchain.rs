@@ -486,3 +486,7 @@ pub struct GetTxOutSetInfo {
 /// Models the result of JSON-RPC method `verifytxoutproof`.
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct VerifyTxOutProof(pub Vec<Txid>);
+
+/// Models the result of JSON-RPC method `pruneblockchain`.
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash, Deserialize, Serialize)]
+pub struct PruneBlockchain(pub u32);

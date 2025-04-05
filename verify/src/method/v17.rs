@@ -29,11 +29,12 @@ pub const METHODS: &[Method] = &[
     Method::new_string("gettxoutproof", "get_tx_out_proof"),
     Method::new_modeled("gettxoutsetinfo", "GetTxOutSetInfo", "get_tx_out_set_info"),
     Method::new_nothing("preciousblock", "precious_block"),
-    Method::new_numeric("pruneblockchain", "prune_blockchain"),
     Method::new_nothing("savemempool", "save_mempool"),
     Method::new_modeled("scantxoutset", "ScanTxOutSet", "scan_tx_out_set"),
     Method::new_bool("verifychain", "verify_chain"),
     Method::new_modeled("verifytxoutproof", "VerifyTxOutProof", "verify_tx_out_proof"),
+    Method::new_no_model("pruneblockchain", "PruneBlockchain", "prune_blockchain"),
+
     Method::new_no_model("getmemoryinfo", "GetMemoryInfoStats", "get_memory_info"),
     Method::new_string("help", "help"),
     Method::new_no_model("logging", "Logging", "logging"),

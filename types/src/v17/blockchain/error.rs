@@ -560,3 +560,37 @@ impl std::error::Error for GetTxOutSetInfoError {
 impl From<NumericError> for GetTxOutSetInfoError {
     fn from(e: NumericError) -> Self { Self::Numeric(e) }
 }
+
+/// Error when converting the `PruneBlockchain` JSON type to the Model type.
+#[derive(Debug)]
+pub enum PruneBlockchainError {
+    /// Conversion of the returned height to the expected numeric type failed.
+    Numeric(NumericError),
+}
+
+impl fmt::Display for PruneBlockchainError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use PruneBlockchainError::*;
+
+        match *self {
+            Numeric(ref e) => write_err!(f, "numeric conversion of pruned height failed"; e),
+        }
+    }
+}
+
+#[cfg(feature = "std")]
+impl std::error::Error for PruneBlockchainError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        use PruneBlockchainError::*;
+
+        match *self {
+            Numeric(ref e) => Some(e),
+        }
+    }
+}
+
+impl From<NumericError> for PruneBlockchainError {
+    fn from(e: NumericError) -> Self {
+        Self::Numeric(e)
+    }
+}
