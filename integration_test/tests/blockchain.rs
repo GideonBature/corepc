@@ -256,25 +256,15 @@ fn verify_tx_out_proof() {
     assert_eq!(txids.0.len(), 1);
 }
 
-// Implicitly tests the omitted method `pruneblockchain`
 #[test]
 fn prune_blockchain() {
-    let node = Node::with_wallet(Wallet::Default, &["-prune=550"]);
-    // Generate 1001 blocks to exceed regtest's nPruneAfterHeight (1000)
-    let num_blocks_to_mine = 1001;
-    // (Using a loop with mine_a_block is necessary as generate() is deprecated in v28)
-    for _ in 0..num_blocks_to_mine {
-        node.mine_a_block();
-    }
+    const NBLOCKS: usize = 1001;
 
-    // Verify block count
-    let count = node.client.get_block_count().expect("getblockcount").0;
-    assert!(
-        count >= num_blocks_to_mine as u64,
-        "Failed to mine enough blocks. Expected: {}, Got: {}",
-        num_blocks_to_mine,
-        count
-    );
+    let node = Node::with_wallet(Wallet::Default, &["-prune=550"]);
+    let address = node.client.new_address().expect("Failed to get new address");
+
+    let gen_result = node.client.generate_to_address(NBLOCKS, &address).expect("generate_to_address RPC call failed");
+    assert_eq!(gen_result.0.len(), NBLOCKS, "generate_to_address did not return the expected number of block hashes");
 
     let target_height: u64 = 500;
 

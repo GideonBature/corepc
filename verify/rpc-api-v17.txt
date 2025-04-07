@@ -18,7 +18,6 @@ gettxout "txid" n ( include_mempool )
 gettxoutproof ["txid",...] ( blockhash )
 gettxoutsetinfo
 preciousblock "blockhash"
-pruneblockchain height
 savemempool
 scantxoutset <action> ( <scanobjects> )
 verifychain ( checklevel nblocks )

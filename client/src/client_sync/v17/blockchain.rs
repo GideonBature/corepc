@@ -305,7 +305,7 @@ macro_rules! impl_client_v17__pruneblockchain {
         impl Client {
             /// Instructs the node to prune the blockchain up to a specified height or timestamp.
             pub fn prune_blockchain(&self, target: u64) -> Result<PruneBlockchain> {
-                self.call("pruneblockchain", &[into_json(target)?])
+                self.call("pruneblockchain", &[target.into()])
             }
         }
     };

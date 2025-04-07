@@ -676,9 +676,6 @@ pub struct VerifyTxOutProof(pub Vec<String>);
 /// > Arguments:
 /// > 1. "height"       (numeric, required) The block height to prune up to. May be set to a discrete height, or a unix timestamp
 /// >                   to prune blocks whose block time is at least 2 hours older than the provided timestamp.
-/// >
-/// > Result:
-/// > n    (numeric) Height of the last block pruned.
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 pub struct PruneBlockchain(
     /// The height of the last block pruned.

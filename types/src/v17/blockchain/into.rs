@@ -545,13 +545,3 @@ impl VerifyTxOutProof {
         Ok(model::VerifyTxOutProof(proofs))
     }
 }
-
-impl PruneBlockchain {
-    /// Converts version specific type to a version nonspecific, more strongly typed type.
-    pub fn into_model(self) -> Result<model::PruneBlockchain, PruneBlockchainError> {
-        // Use the helper function to convert the i64 height to u32, handling potential errors.
-        let height = crate::to_u32(self.0, "pruned_height")?;
-        // Wrap the u32 height in the model struct.
-        Ok(model::PruneBlockchain(height))
-    }
-}
