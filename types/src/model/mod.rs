@@ -27,7 +27,7 @@ pub use self::{
         GetBlockchainInfo, GetChainTips, GetChainTxStats, GetDifficulty, GetMempoolAncestors,
         GetMempoolAncestorsVerbose, GetMempoolDescendants, GetMempoolDescendantsVerbose,
         GetMempoolEntry, GetMempoolInfo, GetRawMempool, GetRawMempoolVerbose, GetTxOut,
-        GetTxOutSetInfo, MempoolEntry, MempoolEntryFees, Softfork, SoftforkType, VerifyTxOutProof, PruneBlockchain,
+        GetTxOutSetInfo, MempoolEntry, MempoolEntryFees, Softfork, SoftforkType, VerifyTxOutProof,
     },
     generating::{Generate, GenerateToAddress},
     mining::{

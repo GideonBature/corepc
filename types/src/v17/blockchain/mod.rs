@@ -668,7 +668,6 @@ pub struct GetTxOutSetInfo {
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct VerifyTxOutProof(pub Vec<String>);
 
-
 /// Result of JSON-RPC method `pruneblockchain`.
 ///
 /// > pruneblockchain height
