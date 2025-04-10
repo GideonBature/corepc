@@ -228,7 +228,7 @@ pub use self::{
         Bip9Softfork, Bip9SoftforkStatus, ChainTips, ChainTipsError, ChainTipsStatus,
         GetBestBlockHash, GetBlockCount, GetBlockHash, GetBlockHeader, GetBlockHeaderError,
         GetBlockHeaderVerbose, GetBlockHeaderVerboseError, GetBlockStats, GetBlockStatsError,
-        GetBlockVerbosityOne, GetBlockVerbosityOneError, GetBlockVerbosityZero, GetBlockchainInfo,
+        GetBlockVerboseOne, GetBlockVerboseOneError, GetBlockVerboseZero, GetBlockchainInfo,
         GetBlockchainInfoError, GetChainTips, GetChainTxStats, GetChainTxStatsError, GetDifficulty,
         GetMempoolAncestors, GetMempoolAncestorsVerbose, GetMempoolDescendants,
         GetMempoolDescendantsVerbose, GetMempoolEntry, GetMempoolInfo, GetMempoolInfoError,

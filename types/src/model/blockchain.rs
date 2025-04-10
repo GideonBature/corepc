@@ -20,11 +20,11 @@ pub struct GetBestBlockHash(pub BlockHash);
 
 /// Models the result of JSON-RPC method `getblock` with verbosity set to 0.
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
-pub struct GetBlockVerbosityZero(pub Block);
+pub struct GetBlockVerboseZero(pub Block);
 
 /// Models the result of JSON-RPC method `getblock` with verbosity set to 1.
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct GetBlockVerbosityOne {
+pub struct GetBlockVerboseOne {
     /// The block hash (same as provided) in RPC call.
     pub hash: BlockHash,
     /// The number of confirmations, or -1 if the block is not on the main chain.

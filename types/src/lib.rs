@@ -73,7 +73,7 @@ impl fmt::Display for NumericError {
 
         match *self {
             Negative{ ref field, value } => write!(f, "expected an unsigned numeric value however the value was negative (field name: {} value: {})", field, value),
-            Overflow { ref field, value } => write!(f, "a  value larger than `u32::MAX` was unexpectedly encountered (field name: {} Value: {})", field, value),
+            Overflow { ref field, value } => write!(f, "a value larger than `u32::MAX` was unexpectedly encountered (field name: {} Value: {})", field, value),
         }
     }
 }

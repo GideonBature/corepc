@@ -9,7 +9,7 @@
 //!
 //! See or use the `define_jsonrpc_minreq_client!` macro to define a `Client`.
 
-/// Implements Bitcoin Core JSON-RPC API method `createwallet`.
+/// Implements Bitcoin Core JSON-RPC API method `addmultisigaddress`.
 #[macro_export]
 macro_rules! impl_client_v17__addmultisigaddress {
     () => {
@@ -123,24 +123,16 @@ macro_rules! impl_client_v17__getnewaddress {
         impl Client {
             /// Gets a new address from `bitcoind` and parses it assuming its correct.
             pub fn new_address(&self) -> Result<bitcoin::Address> {
-                use core::str::FromStr;
-
                 let json = self.get_new_address(None, None)?;
-                let address = bitcoin::Address::from_str(&json.0)
-                    .expect("assume the address is valid")
-                    .assume_checked(); // Assume bitcoind will return an valid address for the network its on.
-                Ok(address)
+                let model = json.into_model().unwrap();
+                Ok(model.0.assume_checked())
             }
 
             /// Gets a new address from `bitcoind` and parses it assuming its correct.
             pub fn new_address_with_type(&self, ty: AddressType) -> Result<bitcoin::Address> {
-                use core::str::FromStr;
-
                 let json = self.get_new_address(None, Some(ty))?;
-                let address = bitcoin::Address::from_str(&json.0)
-                    .expect("assume the address is valid")
-                    .assume_checked(); // Assume bitcoind will return an valid address for the network its on.
-                Ok(address)
+                let model = json.into_model().unwrap();
+                Ok(model.0.assume_checked())
             }
 
             /// Gets a new address with label from `bitcoind` and parses it assuming its correct.
@@ -149,15 +141,13 @@ macro_rules! impl_client_v17__getnewaddress {
                 &self,
                 label: &str,
             ) -> Result<bitcoin::Address<bitcoin::address::NetworkUnchecked>> {
-                use core::str::FromStr;
-
                 let json = self.get_new_address(Some(label), None)?;
-                let address =
-                    bitcoin::Address::from_str(&json.0).expect("assume the address is valid");
-                Ok(address)
+                let model = json.into_model().unwrap();
+                Ok(model.0)
             }
 
-            fn get_new_address(
+            /// Gets a new address - low level RPC call.
+            pub fn get_new_address(
                 &self,
                 label: Option<&str>,
                 ty: Option<AddressType>,

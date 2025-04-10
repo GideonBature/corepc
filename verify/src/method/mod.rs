@@ -81,7 +81,7 @@ impl Method {
     }
 
     /// Represents a `Method` that requires a custom type as well as a type in `model`.
-    const fn new_modeled(name: &'static str, ty: &'static str, function: &'static str) -> Method {
+    const fn new_modelled(name: &'static str, ty: &'static str, function: &'static str) -> Method {
         Method { name, ret: Some(Return::Type(ty)), requires_model: true, function }
     }
 

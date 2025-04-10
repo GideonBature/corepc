@@ -2,13 +2,16 @@
 
 //! Tests for methods found under the `== Mining ==` section of the API docs.
 
+#![allow(non_snake_case)] // Test names intentionally use double underscore.
+
 use bitcoin::SignedAmount;
-use client::types::model::GetBlockTemplate;
-use client::client_sync::{TemplateRequest, TemplateRules};
 use integration_test::{Node, NodeExt as _, Wallet};
+use node::client::client_sync::{TemplateRequest, TemplateRules};
+use node::vtype::*;             // All the version specific types.
+use node::mtype;
 
 #[test]
-fn get_block_template() {
+fn mining__get_block_template__modelled() {
     // Requires connected nodes otherwise the RPC call errors.
     let (node1, node2, node3) = integration_test::three_node_network();
 
@@ -19,21 +22,22 @@ fn get_block_template() {
 
     let options = TemplateRequest { rules: vec![TemplateRules::Segwit] };
 
-    let json = node1.client.get_block_template(&options).expect("getblocktemplate");
-    assert!(json.into_model().is_ok());
+    let json: GetBlockTemplate = node1.client.get_block_template(&options).expect("rpc");
+    let model: Result<mtype::GetBlockTemplate, GetBlockTemplateError> = json.into_model();
+    model.unwrap();
 }
 
 #[test]
-fn get_mining_info() {
+fn mining__get_mining_info() {
     let node = Node::with_wallet(Wallet::Default, &[]);
-    let _ = node.client.get_mining_info().expect("getmininginfo");
+    let _: GetMiningInfo = node.client.get_mining_info().expect("rpc");
 }
 
 #[test]
-fn get_network_hash_ps() {
+fn mining__get_network_hash_ps() {
     let node = Node::with_wallet(Wallet::Default, &[]);
     node.fund_wallet();
-    let _ = node.client.get_network_hash_ps().expect("getnetworkhashps");
+    let _ = node.client.get_network_hash_ps().expect("rpc");
 }
 
 #[test]
@@ -49,7 +53,7 @@ fn get_network_hash_ps() {
     not(feature = "v24"),
     not(feature = "v25"),
 ))]
-fn get_prioritised_transactions() {
+fn mining__get_prioritised_transactions() {
     let node = Node::with_wallet(Wallet::Default, &[]);
     node.fund_wallet();
 
@@ -57,7 +61,7 @@ fn get_prioritised_transactions() {
 }
 
 #[test]
-fn prioritise_transaction() {
+fn mining__prioritise_transaction() {
     let node = Node::with_wallet(Wallet::Default, &[]);
     node.fund_wallet();
 
@@ -69,7 +73,7 @@ fn prioritise_transaction() {
 
 #[test]
 #[cfg(feature = "TODO")]        // This test is flaky - no clue why.
-fn submit_block() {
+fn mining__submit_block() {
     // Requires connected nodes otherwise the RPC call errors.
     let (node1, node2, node3) = integration_test::three_node_network();
 
@@ -89,7 +93,7 @@ fn submit_block() {
 // Code copied from BDK - thanks!
 // FIXME: Submitting this block sometimes works and sometimes returns 'inconclusive'.
 #[allow(dead_code)]
-fn submit_empty_block(node: &Node, bt: &GetBlockTemplate) {
+fn submit_empty_block(node: &Node, bt: &mtype::GetBlockTemplate) {
     use bitcoin::hashes::Hash as _;
     use bitcoin::{
         absolute, block, transaction, Amount, Block, OutPoint, ScriptBuf, Sequence,
@@ -141,7 +145,7 @@ fn submit_empty_block(node: &Node, bt: &GetBlockTemplate) {
 
 // FIXME: Submitting this block returns 'inconclusive'.
 #[allow(dead_code)]
-fn submit_block_with_dummy_coinbase(node: &Node, bt: &GetBlockTemplate) {
+fn mining__submit_block_with_dummy_coinbase(node: &Node, bt: &mtype::GetBlockTemplate) {
     use bitcoin::hashes::Hash as _;
     use bitcoin::{
         absolute, block, transaction, Amount, Block, OutPoint, ScriptBuf, Sequence,

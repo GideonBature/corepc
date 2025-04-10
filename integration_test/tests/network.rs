@@ -2,41 +2,44 @@
 
 //! Tests for methods found under the `== Network ==` section of the API docs.
 
-#![cfg(any(feature = "0_17_1", feature = "0_18_1"))]
+#![allow(non_snake_case)] // Test names intentionally use double underscore.
 
 use integration_test::{Node, NodeExt as _, Wallet};
+use node::vtype::*;             // All the version specific types.
+use node::mtype;
 
 #[test]
-fn get_added_node_info() {
+fn network__get_added_node_info() {
     let node = Node::with_wallet(Wallet::None, &[]);
-    let _ = node.client.get_added_node_info().expect("getaddednodeinfo");
+    let _: GetAddedNodeInfo = node.client.get_added_node_info().expect("getaddednodeinfo");
 }
 
 #[test]
-fn get_net_totals() {
+fn network__get_net_totals() {
     let node = Node::with_wallet(Wallet::None, &[]);
-    let _ = node.client.get_net_totals().expect("getnettotals");
+    let _: GetNetTotals = node.client.get_net_totals().expect("getnettotals");
 }
 
 #[test]
-fn get_network_info() {
+fn network__get_network_info() {
     let node = Node::with_wallet(Wallet::None, &[]);
-    let json = node.client.get_network_info().expect("getnetworkinfo");
-    assert!(json.into_model().is_ok());
+    let json: GetNetworkInfo = node.client.get_network_info().expect("getnetworkinfo");
+    let model: Result<mtype::GetNetworkInfo, GetNetworkInfoError> = json.into_model();
+    model.unwrap();
 
     // Server version is returned as part of the getnetworkinfo method.
     node.client.check_expected_server_version().expect("unexpected version");
 }
 
 #[test]
-fn get_peer_info() {
+fn network__get_peer_info() {
     get_peer_info_one_node_network();
     get_peer_info_three_node_network();
 }
 
 fn get_peer_info_one_node_network() {
     let node = Node::with_wallet(Wallet::None, &[]);
-    let json = node.client.get_peer_info().expect("getpeerinfo");
+    let json: GetPeerInfo = node.client.get_peer_info().expect("getpeerinfo");
     assert_eq!(json.0.len(), 0);
 }
 

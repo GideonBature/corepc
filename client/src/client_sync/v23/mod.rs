@@ -4,6 +4,8 @@
 //!
 //! We ignore option arguments unless they effect the shape of the returned JSON data.
 
+pub mod wallet;
+
 use std::collections::BTreeMap;
 use std::path::Path;
 
@@ -18,6 +20,7 @@ use crate::types::v23::*;
 pub use crate::client_sync::WalletCreateFundedPsbtInput;
 
 crate::define_jsonrpc_minreq_client!("v23");
+crate::impl_client_check_expected_server_version!({ [230200] });
 
 // == Blockchain ==
 crate::impl_client_v17__getbestblockhash!();
@@ -62,8 +65,9 @@ crate::impl_client_v17__prioritisetransaction!();
 crate::impl_client_v17__submitblock!();
 
 // == Network ==
+crate::impl_client_v17__getaddednodeinfo!();
+crate::impl_client_v17__getnettotals!();
 crate::impl_client_v17__getnetworkinfo!();
-crate::impl_client_check_expected_server_version!({ [230000, 230100, 230200] });
 crate::impl_client_v17__getpeerinfo!();
 
 // == Rawtransactions ==
@@ -74,7 +78,7 @@ crate::impl_client_v17__sendrawtransaction!();
 // == Wallet ==
 crate::impl_client_v17__addmultisigaddress!();
 crate::impl_client_v17__bumpfee!();
-crate::impl_client_v17__createwallet!();
+crate::impl_client_v23__createwallet!();
 crate::impl_client_v17__dumpprivkey!();
 crate::impl_client_v17__dumpwallet!();
 crate::impl_client_v17__getaddressesbylabel!();

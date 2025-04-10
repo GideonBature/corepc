@@ -2,14 +2,18 @@
 
 //! Tests for methods found under the `== Rawtransactions ==` section of the API docs.
 
+#![allow(non_snake_case)] // Test names intentionally use double underscore.
+
 use std::collections::BTreeMap;
 
 use bitcoin::{Amount, Sequence};
-use client::client_sync::Input;
+#[cfg(feature = "TODO")]
+use bitcoin::{absolute, transaction, consensus, TxOut, Transaction};
 use integration_test::{Node, NodeExt as _, Wallet};
+use node::client::client_sync::Input;
 
 #[test]
-fn create_raw_transaction() {
+fn raw_transacitons__create_raw_transaction() {
     let node = Node::with_wallet(Wallet::Default, &[]);
     node.fund_wallet();
     // Calls `createrawtransaction`.
@@ -18,14 +22,14 @@ fn create_raw_transaction() {
 
 #[test]
 #[cfg(feature = "TODO")]
-fn fund_raw_transaction() {
+fn raw_transactions__fund_raw_transaction() {
     let node = Node::with_wallet(Wallet::Default, &[]);
     node.fund_wallet();
     _create_fund_and_send(&node);
 }
 
 #[test]
-fn send_raw_transaction() {
+fn raw_transactions__send_raw_transaction() {
     let node = Node::with_wallet(Wallet::Default, &[]);
     node.fund_wallet();
     // Calls `sendrawtransaction`.
@@ -111,7 +115,7 @@ fn _create_fund_and_send(node: &Node) {
         input: vec![],
         output: vec![spend, change],
     };
-    let tx = consensus::encode::serialize_hex(&tx);
+    let _ = consensus::encode::serialize_hex(&tx);
 
     // TODO: This errors with: RpcError { code: -22, message: "TX decode failed", data: None }
     // let json = node.client.fund_raw_transaction(&tx).expect("fundrawtransaction");
@@ -128,7 +132,7 @@ fn _create_fund_and_send(node: &Node) {
 
 #[test]
 #[cfg(feature = "v28")]
-fn submitpackage() {
+fn raw_transactions__submitpackage() {
     let node = Node::with_wallet(Wallet::Default, &[]);
 
     // Submitting the empty package should simply fail.

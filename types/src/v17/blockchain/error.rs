@@ -10,9 +10,9 @@ use bitcoin::{address, hex, network};
 use crate::error::write_err;
 use crate::NumericError;
 
-/// Error when converting a `GetBlockVerbosityOne` type into the model type.
+/// Error when converting a `GetBlockVerboseOne` type into the model type.
 #[derive(Debug)]
-pub enum GetBlockVerbosityOneError {
+pub enum GetBlockVerboseOneError {
     /// Conversion of numeric type to expected type failed.
     Numeric(NumericError),
     /// Conversion of the transaction `hash` field failed.
@@ -29,9 +29,9 @@ pub enum GetBlockVerbosityOneError {
     NextBlockHash(hex::HexToArrayError),
 }
 
-impl fmt::Display for GetBlockVerbosityOneError {
+impl fmt::Display for GetBlockVerboseOneError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        use GetBlockVerbosityOneError::*;
+        use GetBlockVerboseOneError::*;
 
         match *self {
             Numeric(ref e) => write_err!(f, "numeric"; e),
@@ -48,9 +48,9 @@ impl fmt::Display for GetBlockVerbosityOneError {
 }
 
 #[cfg(feature = "std")]
-impl std::error::Error for GetBlockVerbosityOneError {
+impl std::error::Error for GetBlockVerboseOneError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        use GetBlockVerbosityOneError::*;
+        use GetBlockVerboseOneError::*;
 
         match *self {
             Numeric(ref e) => Some(e),
@@ -64,7 +64,7 @@ impl std::error::Error for GetBlockVerbosityOneError {
     }
 }
 
-impl From<NumericError> for GetBlockVerbosityOneError {
+impl From<NumericError> for GetBlockVerboseOneError {
     fn from(e: NumericError) -> Self { Self::Numeric(e) }
 }
 

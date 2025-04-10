@@ -37,15 +37,14 @@ pub struct GetBestBlockHash(pub String);
 /// > 1. "blockhash"          (string, required) The block hash
 /// > 2. verbosity              (numeric, optional, default=1) 0 for hex encoded data, 1 for a json object, and 2 for json object with transaction data
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-// TODO: Consider renaming this to `GetBlcokVerboseZero`.
-pub struct GetBlockVerbosityZero(
+pub struct GetBlockVerboseZero(
     /// A string that is serialized, hex-encoded data for block 'hash'.
     pub String,
 );
 
 /// Result of JSON-RPC method `getblock` with verbosity set to 1.
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-pub struct GetBlockVerbosityOne {
+pub struct GetBlockVerboseOne {
     /// The block hash (same as provided) in RPC call.
     pub hash: String,
     /// The number of confirmations, or -1 if the block is not on the main chain.

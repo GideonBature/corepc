@@ -51,12 +51,12 @@ macro_rules! impl_client_v17__getblock {
             }
 
             /// Gets a block by blockhash with verbose set to 0.
-            pub fn get_block_verbose_zero(&self, hash: BlockHash) -> Result<GetBlockVerbosityZero> {
+            pub fn get_block_verbose_zero(&self, hash: BlockHash) -> Result<GetBlockVerboseZero> {
                 self.call("getblock", &[into_json(hash)?, 0.into()])
             }
 
             /// Gets a block by blockhash with verbose set to 1.
-            pub fn get_block_verbose_one(&self, hash: BlockHash) -> Result<GetBlockVerbosityOne> {
+            pub fn get_block_verbose_one(&self, hash: BlockHash) -> Result<GetBlockVerboseOne> {
                 self.call("getblock", &[into_json(hash)?, 1.into()])
             }
         }
@@ -279,7 +279,11 @@ macro_rules! impl_client_v17__preciousblock {
     () => {
         impl Client {
             pub fn precious_block(&self, hash: BlockHash) -> Result<()> {
-                self.call("preciousblock", &[into_json(hash)?])
+                match self.call("preciousblock", &[into_json(hash)?]) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(res) => Err(Error::Returned(res.to_string())),
+                    Err(err) => Err(err.into()),
+                }
             }
         }
     };

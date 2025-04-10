@@ -2,43 +2,44 @@
 
 //! Tests for methods found under the `== Control ==` section of the API docs.
 
+#![allow(non_snake_case)] // Test names intentionally use double underscore.
+
 use integration_test::{Node, NodeExt as _, Wallet};
+use node::vtype::*;             // All the version specific types.
 
 #[test]
-fn get_memory_info() {
+fn control__get_memory_info() {
     let node = Node::with_wallet(Wallet::None, &[]);
-    let _ = node.client.get_memory_info().expect("getmemoryinfo");
+    let _: GetMemoryInfoStats = node.client.get_memory_info().unwrap();
 }
 
 #[cfg(not(feature = "v17"))]
 #[test]
-fn get_rpc_info() {
+fn control__get_rpc_info() {
     let node = Node::with_wallet(Wallet::None, &[]);
-    let _ = node.client.get_rpc_info().expect("getrpcinfo");
+    let _ = node.client.get_rpc_info().unwrap();
 }
 
 #[test]
-fn help() {
+fn control__help() {
     let node = Node::with_wallet(Wallet::None, &[]);
-    // There is no json object for `stop`, we just return a string.
-    let _ = node.client.help().expect("help");
+    let _ = node.client.help().unwrap();
 }
 
 #[test]
-fn logging() {
+fn control__logging() {
     let node = Node::with_wallet(Wallet::None, &[]);
-    let _ = node.client.logging().expect("logging");
+    let _: Logging = node.client.logging().unwrap();
 }
 
 #[test]
-fn stop() {
+fn control__stop() {
     let node = Node::with_wallet(Wallet::None, &[]);
-    // There is no json object for `stop`, we just return a string.
-    let _ = node.client.stop().expect("stop");
+    let _ = node.client.stop().unwrap();
 }
 
 #[test]
-fn uptime() {
+fn control__uptime() {
     let node = Node::with_wallet(Wallet::None, &[]);
-    let _ = node.client.uptime().expect("uptime");
+    let _ = node.client.uptime().unwrap();
 }

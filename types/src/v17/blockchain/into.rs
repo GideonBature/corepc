@@ -17,21 +17,21 @@ impl GetBestBlockHash {
     pub fn block_hash(self) -> Result<BlockHash, hex::HexToArrayError> { Ok(self.into_model()?.0) }
 }
 
-impl GetBlockVerbosityZero {
+impl GetBlockVerboseZero {
     /// Converts version specific type to a version nonspecific, more strongly typed type.
-    pub fn into_model(self) -> Result<model::GetBlockVerbosityZero, encode::FromHexError> {
+    pub fn into_model(self) -> Result<model::GetBlockVerboseZero, encode::FromHexError> {
         let block = encode::deserialize_hex(&self.0)?;
-        Ok(model::GetBlockVerbosityZero(block))
+        Ok(model::GetBlockVerboseZero(block))
     }
 
     /// Converts json straight to a `bitcoin::Block`.
     pub fn block(self) -> Result<Block, encode::FromHexError> { Ok(self.into_model()?.0) }
 }
 
-impl GetBlockVerbosityOne {
+impl GetBlockVerboseOne {
     /// Converts version specific type to a version nonspecific, more strongly typed type.
-    pub fn into_model(self) -> Result<model::GetBlockVerbosityOne, GetBlockVerbosityOneError> {
-        use GetBlockVerbosityOneError as E;
+    pub fn into_model(self) -> Result<model::GetBlockVerboseOne, GetBlockVerboseOneError> {
+        use GetBlockVerboseOneError as E;
 
         let hash = self.hash.parse::<BlockHash>().map_err(E::Hash)?;
         let stripped_size =
@@ -57,7 +57,7 @@ impl GetBlockVerbosityOne {
             .transpose()
             .map_err(E::NextBlockHash)?;
 
-        Ok(model::GetBlockVerbosityOne {
+        Ok(model::GetBlockVerboseOne {
             hash,
             confirmations: self.confirmations,
             size: crate::to_u32(self.size, "size")?,

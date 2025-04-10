@@ -23,8 +23,12 @@ pub use {anyhow, serde_json, tempfile, which};
 #[rustfmt::skip]                // Keep pubic re-exports separate.
 #[doc(inline)]
 pub use self::{
-    client_versions::{types, Client, AddressType},
+    // Re-export `vtype` - the version specific types.
+    client_versions::{vtype, Client, AddressType},
+    // Re-export the version string e.g., "28.0".
     versions::VERSION,
+    // Re-export the model types as `mtype` to differentiate it from `vtype`.
+    client::types::model as mtype, // `types` is the `corepc-types` crate.
 };
 
 #[derive(Debug)]
@@ -731,10 +735,10 @@ mod test {
         node.client.generate_to_address(101, &bob_address).unwrap();
 
         let balances = alice.get_balances().unwrap();
-        let alice_balances: types::GetBalances = balances;
+        let alice_balances: vtype::GetBalances = balances;
 
         let balances = bob.get_balances().unwrap();
-        let bob_balances: types::GetBalances = balances;
+        let bob_balances: vtype::GetBalances = balances;
 
         assert_eq!(
             Amount::from_btc(50.0).unwrap(),
@@ -751,7 +755,7 @@ mod test {
         let _txid = alice.send_to_address(&bob_address, Amount::from_btc(1.0).unwrap()).unwrap();
 
         let balances = alice.get_balances().unwrap();
-        let alice_balances: types::GetBalances = balances;
+        let alice_balances: vtype::GetBalances = balances;
 
         assert!(
             Amount::from_btc(alice_balances.mine.trusted).unwrap()
@@ -763,7 +767,7 @@ mod test {
         // bob wallet may not be immediately updated
         for _ in 0..30 {
             let balances = bob.get_balances().unwrap();
-            let bob_balances: types::GetBalances = balances;
+            let bob_balances: vtype::GetBalances = balances;
 
             if Amount::from_btc(bob_balances.mine.untrusted_pending).unwrap().to_sat() > 0 {
                 break;
@@ -771,7 +775,7 @@ mod test {
             std::thread::sleep(std::time::Duration::from_millis(100));
         }
         let balances = bob.get_balances().unwrap();
-        let bob_balances: types::GetBalances = balances;
+        let bob_balances: vtype::GetBalances = balances;
 
         assert_eq!(
             Amount::from_btc(1.0).unwrap(),

@@ -20,6 +20,7 @@ use crate::types::v26::*;
 pub use crate::client_sync::{v23::AddressType, WalletCreateFundedPsbtInput};
 
 crate::define_jsonrpc_minreq_client!("v26");
+crate::impl_client_check_expected_server_version!({ [260000, 260100, 260200] });
 
 // == Blockchain ==
 crate::impl_client_v17__getbestblockhash!();
@@ -65,8 +66,9 @@ crate::impl_client_v17__prioritisetransaction!();
 crate::impl_client_v17__submitblock!();
 
 // == Network ==
+crate::impl_client_v17__getaddednodeinfo!();
+crate::impl_client_v17__getnettotals!();
 crate::impl_client_v17__getnetworkinfo!();
-crate::impl_client_check_expected_server_version!({ [260000, 260100, 260200] });
 crate::impl_client_v17__getpeerinfo!();
 
 // == Rawtransactions ==
@@ -77,7 +79,7 @@ crate::impl_client_v17__sendrawtransaction!();
 // == Wallet ==
 crate::impl_client_v17__addmultisigaddress!();
 crate::impl_client_v17__bumpfee!();
-crate::impl_client_v17__createwallet!();
+crate::impl_client_v23__createwallet!();
 crate::impl_client_v17__dumpprivkey!();
 crate::impl_client_v17__dumpwallet!();
 crate::impl_client_v17__getaddressesbylabel!();

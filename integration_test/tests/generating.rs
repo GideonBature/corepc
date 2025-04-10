@@ -2,31 +2,41 @@
 
 //! Tests for methods found under the `== Generating ==` section of the API docs.
 
+#![allow(non_snake_case)] // Test names intentionally use double underscore.
+
 use integration_test::{Node, NodeExt as _, Wallet};
+use node::vtype::*;             // All the version specific types.
+use node::mtype;
 
 #[test]
-// The `generate` method deprecated in Core v18 and was removed in v19.
+// The `generate` method was deprecated in Core v18 and was removed in v19.
 #[cfg(feature = "v17")]
-fn generate() {
+fn generating__generate__modelled() {
     const NBLOCKS: usize = 10;
-
     let node = Node::with_wallet(Wallet::Default, &[]);
-    let _ = node.client.generate(NBLOCKS).expect("generate");
+
+    let json: Generate = node.client.generate(NBLOCKS).expect("generate");
+
+    let model: Result<mtype::Generate, _> = json.into_model();
+    model.unwrap();
 }
 
 #[test]
-fn generate_to_address() {
+fn generating__generate_to_address__modelled() {
     const NBLOCKS: usize = 1;
 
     let node = Node::with_wallet(Wallet::Default, &[]);
-
     let address = node.client.new_address().expect("failed to get new address");
-    let json = node.client.generate_to_address(NBLOCKS, &address).expect("generatetoaddress");
-    json.into_model().unwrap();
+
+    let json: GenerateToAddress = node.client.generate_to_address(NBLOCKS, &address).expect("generatetoaddress");
+
+    let model: Result<mtype::GenerateToAddress, _>  = json.into_model();
+    let _ = model.unwrap();
 }
 
+// This method does not appear in the output of `bitcoin-cli help`.
 #[test]
-fn invalidate_block() {
+fn generating__invalidate_block() {
     const NBLOCKS: usize = 1;
 
     let node = Node::with_wallet(Wallet::Default, &[]);
@@ -49,14 +59,3 @@ fn invalidate_block() {
         node.client.get_best_block_hash().expect("getbestblockhash").into_model().unwrap().0;
     assert_eq!(old_best_block, best_block);
 }
-
-// #[test]
-// #[cfg(not(feature = "v19"))]
-// fn generate() {
-//     const NBLOCKS: usize = 100;
-
-//     let node = Node::with_wallet_with_default_wallet();
-//     let json = node.client.generate(NBLOCKS).expect("generate");
-//     let model = json.into_model().unwrap();
-//     assert_eq!(model.len(), NBLOCKS);
-// }

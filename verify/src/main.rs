@@ -43,10 +43,8 @@ fn main() -> Result<()> {
     } else if let Ok(v) = version.parse::<Version>() {
         verify_version(v, test_output, quiet)?;
     } else {
-        eprint!("Unrecognised version: {} (supported versions:", version);
-        for version in VERSIONS {
-            eprint!(" {}", version);
-        }
+        eprint!("Unrecognised version: {} (supported versions: ", version);
+        eprint!("{} - {}", VERSIONS[0], VERSIONS[VERSIONS.len() - 1]);
         eprintln!(")");
         process::exit(1);
     }
@@ -214,7 +212,7 @@ mod check_integration_test_crate {
         Ok(functions)
     }
 
-    /// Checks that a type exists in `model` module.
+    /// Checks that a test exists in the given test output.
     pub fn test_exists(version: Version, method_name: &str, test_output: &str) -> Result<bool> {
         let method = match method::Method::from_name(version, method_name) {
             Some(m) => m,
@@ -225,11 +223,16 @@ mod check_integration_test_crate {
                 ))),
         };
 
-        let tests = all_test_functions(test_output)?;
-        if !tests.contains(&method.function.to_string()) {
-            Ok(false)
+        let test_name = if method.requires_model {
+            format!("__{}__modelled", method.function)
         } else {
-            Ok(true)
+            format!("__{}", method.function)
+        };
+        for t in all_test_functions(test_output)? {
+            if t.contains(&test_name) {
+                return Ok(true)
+            }
         }
+        Ok(false)
     }
 }
