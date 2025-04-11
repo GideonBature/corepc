@@ -292,7 +292,7 @@ fn verify_tx_out_proof(node: &Node) -> Result<(), client_sync::Error> {
 }
 
 #[test]
-fn prune_blockchain() {
+fn blockchain__prune_blockchain() {
     const NBLOCKS: usize = 1001;
 
     let node = Node::with_wallet(Wallet::Default, &["-prune=550"]);
@@ -306,4 +306,41 @@ fn prune_blockchain() {
     let _ = node.client
         .prune_blockchain(target_height)
         .expect("pruneblockchain RPC call failed");
+}
+
+#[test]
+fn blockchain__savemempool() {
+    let node = Node::with_wallet(Wallet::Default, &[]);
+
+    node.fund_wallet();
+    let (_addr, _txid) = node.create_mempool_transaction();
+
+    // Give node a moment to process mempool tx
+    std::thread::sleep(std::time::Duration::from_millis(200));
+
+    let result = node.client.save_mempool();
+
+    // Assert based on version feature flag active during test run
+    #[cfg(any(
+        feature = "0_17_1",
+        feature = "0_18_1",
+        feature = "0_19_1",
+        feature = "0_20_2",
+        feature = "0_21_2",
+        feature = "22_1"
+    ))] {
+        result.expect("savemempool RPC call failed (v17 - v22");
+    }
+
+    #[cfg(any(
+        feature = "23_2",
+        feature = "24_2",
+        feature = "25_2",
+        feature = "26_2",
+        feature = "27_2",
+        feature = "28_0"
+    ))] {
+        let save_result = result.expect("savemempool RPC call failed (v23 - v28)");
+        assert!(!save_result.filename.is_empty(), "Filename returned by savemempool should not be empty (v23 - v28)");
+    }
 }
