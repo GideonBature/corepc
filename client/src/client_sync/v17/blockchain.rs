@@ -331,3 +331,42 @@ macro_rules! impl_client_v17__savemempool {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `verifychain`
+#[macro_export]
+macro_rules! impl_client_v17__verifychain {
+    () => {
+        impl Client {
+            /// Verifies blockchain database using default checklevel and nblocks.
+            /// Returns true if verification finised successfully.
+            pub fn verify_chain_default(&self) -> Result<bool> {
+                // Core returns a boolean directly
+                self.call("verifychain", &[])
+            }
+
+            /// Verifies blockchain database with specified checklevel and nblocks.
+            ///
+            /// # Arguments
+            /// * `checklevel`: (0-4) How thorough the verification is (optional, defaults to 3).
+            /// * `nblocks`: Number of blocks to check (optional, defaults to 6, 0=all).
+            ///
+            /// Returns true if verification finished successfully.
+            pub fn verify_chain(
+                &self,
+                checklevel: Option<u32>,
+                nblocks: Option<u32>,
+            ) -> Result<bool> {
+                // Construct params carefully for optional args
+                // Bitcoin Core often uses positional nulls for omitted optional args
+                let params = match (checklevel, nblocks) {
+                    (Some(level), Some(num)) => vec![level.into(), num.into()],
+                    (Some(level), None) => vec![level.into()],
+                    (None, Some(num)) => vec![serde_json::Value::Null, num.into()],
+                    (None, None) => vec![],
+                };
+
+                self.call("verifychain", &params)
+            }
+        }
+    };
+}

@@ -45,6 +45,7 @@ crate::impl_client_v17__gettxoutsetinfo!();
 crate::impl_client_v17__preciousblock!();
 crate::impl_client_v17__verifytxoutproof!();
 crate::impl_client_v17__savemempool!();
+crate::impl_client_v17__verifychain!();
 
 // == Control ==
 crate::impl_client_v17__getmemoryinfo!();
