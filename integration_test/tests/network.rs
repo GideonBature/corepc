@@ -76,8 +76,9 @@ fn network__add_node() {
         feature = "v25"
     ))] {
         node.client.add_node(dummy_peer, AddNodeCommand::OneTry).expect("addnode onetry failed (v17-v25)");
+
         node.client.add_node(dummy_peer, AddNodeCommand::Add).expect("addnode add failed (v17-v25");
-        node.client.add_node(dummy_peer, AddNodeCommand::Remove).expect("addnode remove failed (v17-v25");
+
         node.client.add_node(dummy_peer, AddNodeCommand::Remove).expect("addnode remove failed (v17-v25");
     }
 
