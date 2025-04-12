@@ -98,3 +98,38 @@ macro_rules! impl_client_v17__clearbanned {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `setban`
+#[macro_export]
+macro_rules! impl_client_v17__setban {
+    () => {
+        impl Client {
+            pub fn set_ban(
+                &self,
+                subnet: &str,
+                command: SetBanCommand,
+                bantime: Option<i64>,
+                absolute: Option<bool>,
+            ) -> Result<()> {
+                let mut params: Vec<serde_json::Value> = vec![subnet.into(), serde_json::to_value(command)?,];
+
+                if bantime.is_some() || absolute.is_some() {
+                    params.push(bantime.map_or(serde_json::Value::Null, |t| t.into()));
+
+                    if let Some(abs) = absolute {
+                        params.push(abs.into());
+                    }
+                }
+
+                match self.call("setban", &params) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => {
+                        Err(crate::client_sync::Error::Returned(format!("setban expected null, got: {}", other)))
+                    },
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}

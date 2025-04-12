@@ -271,3 +271,11 @@ pub enum AddNodeCommand {
     Remove,
     OneTry,
 }
+
+/// Args for the `setban` method
+#[derive(Debug, Clone, Copy, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum SetBanCommand {
+    Add,
+    Remove,
+}

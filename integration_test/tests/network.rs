@@ -4,7 +4,7 @@
 
 #![allow(non_snake_case)] // Test names intentionally use double underscore.
 
-use integration_test::AddNodeCommand;
+use integration_test::{AddNodeCommand, SetBanCommand};
 use integration_test::{Node, NodeExt as _, Wallet};
 use node::vtype::*;             // All the version specific types.
 use node::mtype;
@@ -114,4 +114,26 @@ fn network__clear_banned() {
         },
         Err(e) => Err(format!("list_banned failed during verification: {:?}", e)),
     }
+}
+
+#[test]
+fn network__set_ban() {
+    let node = Node::with_wallet(Wallet::None, &[]);
+
+    let subnet1 = "192.0.2.3";
+    let subnet2 = "192.0.2.0/24";
+
+    node.client.set_ban(subnet1, SetBanCommand::Add, None, None).expect("setban add default time failed");
+
+    node.client.set_ban(subnet2, SetBanCommand::Add, Some(600), None).expect("setban add specific duration failed");
+
+    let future_timestamp = (std::time::SystemTime::now() + std::time::Duration::from_secs(3600)).duration_since(std::time::UNIX_EPOCH).expect("Time went backwards").as_secs();
+
+    node.client.set_ban(subnet1, SetBanCommand::Add, Some(future_timestamp as i64), Some(true)).expect("setban add absolute time failed");
+
+    node.client.set_ban(subnet1, SetBanCommand::Add, None, Some(true)).expect("setban add absolute default time failed");
+
+    node.client.set_ban(subnet1, SetBanCommand::Remove, None, None).expect("setban remove failed for subnet1");
+
+    node.client.set_ban(subnet2, SetBanCommand::Remove, None, None).expect("setban remove failed for subnet2")
 }
