@@ -81,3 +81,20 @@ macro_rules! impl_client_v17__addnode {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `clearbanned`
+#[macro_export]
+macro_rules! impl_client_v17__clearbanned {
+    () => {
+        impl Client {
+            pub fn clear_banned(&self) -> Result<()> {
+                match self.call("clearbanned", &[]) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("clearbanned expected null, got: {}", other))),
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}

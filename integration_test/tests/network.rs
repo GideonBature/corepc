@@ -94,3 +94,24 @@ fn network__add_node() {
         node.client.add_node(dummy_peer, AddNodeCommand::Remove, Some(true)).expect("addnode remove failed (v26+, v2transport=true)");
     }
 }
+
+#[test]
+fn network__clear_banned() {
+    let node = Node::with_wallet(Wallet::Node, &[]);
+
+    let dummy_ip = "192.0.2.2";
+
+    match node.client.set_ban(dummy_ip, "add", Some(60), None) {
+        Ok(_) => Ok(()),
+        Err(e) => Err(format!("set_ban failed: {:?}", e))
+    }
+
+    node.client.clear_banned().expect("clearbanned RPC call failed");
+
+    match node.client.list_banned() {
+        Ok(banned_list) => {
+            assert!(banned_list.o.is_empty(), "Banned list should be empty after clearbanned");
+        },
+        Err(e) => Err(format!("list_banned failed during verification: {:?}", e)),
+    }
+}

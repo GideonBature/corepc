@@ -71,6 +71,7 @@ crate::impl_client_v17__getnettotals!();
 crate::impl_client_v17__getnetworkinfo!();
 crate::impl_client_v17__getpeerinfo!();
 crate::impl_client_v26__addnode!();
+crate::impl_client_v17__clearbanned!();
 
 // == Rawtransactions ==
 crate::impl_client_v17__createrawtransaction!();
