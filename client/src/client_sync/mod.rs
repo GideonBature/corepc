@@ -262,3 +262,12 @@ pub enum TemplateRules {
     /// Taproot supported.
     Taproot,
 }
+
+/// Args for the `addnode` method
+#[derive(Debug, Clone, Copy, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum AddNodeCommand {
+    Add,
+    Remove,
+    OneTry,
+}

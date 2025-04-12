@@ -58,3 +58,26 @@ macro_rules! impl_client_v17__getpeerinfo {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `addnode`
+#[macro_export]
+macro_rules! impl_client_v17__addnode {
+    () => {
+        impl Client {
+            pub fn add_node(&self, node: &str, command: AddNodeCommand) -> Result<()> {
+                let params = &[node.into(), serde_json::to_value(command)?];
+
+                match self.call("addnode", params) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => {
+                        Err(crate::client_sync::Error::Returned(format!(
+                            "addnode expected null, got: {}", other
+                        )))
+                    },
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}

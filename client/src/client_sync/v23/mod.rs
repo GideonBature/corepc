@@ -15,6 +15,7 @@ use bitcoin::{Amount, Block, BlockHash, PublicKey, Txid};
 use serde::{Deserialize, Serialize};
 
 use crate::client_sync::into_json;
+use crate::client_sync::AddNodeCommand;
 use crate::types::v23::*;
 
 #[rustfmt::skip]                // Keep public re-exports separate.
@@ -72,6 +73,7 @@ crate::impl_client_v17__getaddednodeinfo!();
 crate::impl_client_v17__getnettotals!();
 crate::impl_client_v17__getnetworkinfo!();
 crate::impl_client_v17__getpeerinfo!();
+crate::impl_client_v17__addnode!();
 
 // == Rawtransactions ==
 crate::impl_client_v17__createrawtransaction!();

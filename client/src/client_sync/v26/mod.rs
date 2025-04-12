@@ -6,6 +6,7 @@
 
 pub mod blockchain;
 pub mod mining;
+pub mod network;
 
 use std::collections::BTreeMap;
 use std::path::Path;
@@ -14,6 +15,7 @@ use bitcoin::address::{Address, NetworkChecked};
 use bitcoin::{Amount, Block, BlockHash, PublicKey, Txid};
 
 use crate::client_sync::into_json;
+use crate::client_sync::AddNodeCommand;
 use crate::types::v26::*;
 
 #[rustfmt::skip]                // Keep public re-exports separate.
@@ -72,6 +74,7 @@ crate::impl_client_v17__getaddednodeinfo!();
 crate::impl_client_v17__getnettotals!();
 crate::impl_client_v17__getnetworkinfo!();
 crate::impl_client_v17__getpeerinfo!();
+crate::impl_client_v26__addnode!();
 
 // == Rawtransactions ==
 crate::impl_client_v17__createrawtransaction!();

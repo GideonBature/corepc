@@ -4,6 +4,7 @@
 
 #![allow(non_snake_case)] // Test names intentionally use double underscore.
 
+use integration_test::AddNodeCommand;
 use integration_test::{Node, NodeExt as _, Wallet};
 use node::vtype::*;             // All the version specific types.
 use node::mtype;
@@ -55,4 +56,40 @@ fn get_peer_info_three_node_network() {
     assert!(node1.peers_connected() >= 1);
     assert!(node2.peers_connected() >= 1);
     assert!(node3.peers_connected() >= 1);
+}
+
+#[test]
+fn network__add_node() {
+    let node = Node::with_wallet(Wallet::None, &[]);
+
+    let dummy_peer = "192.0.2.1:8333";
+
+    #[cfg(any(
+        feature = "v17",
+        feature = "v18",
+        feature = "v19",
+        feature = "v20",
+        feature = "v21",
+        feature = "v22",
+        feature = "v23",
+        feature = "v24",
+        feature = "v25"
+    ))] {
+        node.client.add_node(dummy_peer, AddNodeCommand::OneTry).expect("addnode onetry failed (v17-v25)");
+        node.client.add_node(dummy_peer, AddNodeCommand::Add).expect("addnode add failed (v17-v25");
+        node.client.add_node(dummy_peer, AddNodeCommand::Remove).expect("addnode remove failed (v17-v25");
+        node.client.add_node(dummy_peer, AddNodeCommand::Remove).expect("addnode remove failed (v17-v25");
+    }
+
+    #[cfg(any(
+        feature = "v26",
+        feature = "v27",
+        feature = "v28"
+    ))] {
+        node.client.add_node(dummy_peer, AddNodeCommand::OneTry, None).expect("addnode onetry failed (v26+, v2transport=None)");
+
+        node.client.add_node(dummy_peer, AddNodeCommand::Add, Some(false)).expect("addone add failed (v26+, v2transport=false)");
+
+        node.client.add_node(dummy_peer, AddNodeCommand::Remove, Some(true)).expect("addnode remove failed (v26+, v2transport=true)");
+    }
 }
