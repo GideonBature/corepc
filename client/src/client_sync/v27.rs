@@ -76,6 +76,7 @@ crate::impl_client_v17__setban!();
 crate::impl_client_v17__listbanned!();
 crate::impl_client_v17__disconnectnode!();
 crate::impl_client_v17__getconnectioncount!();
+crate::impl_client_v17__ping!();
 
 // == Rawtransactions ==
 crate::impl_client_v17__createrawtransaction!();

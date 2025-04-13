@@ -195,3 +195,22 @@ macro_rules! impl_client_v17__getconnectioncount {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `ping`
+#[macro_export]
+macro_rules! impl_client_v17__ping {
+    () => {
+        impl Client {
+            pub fn ping(&self) -> Result<()> {
+                match self.call("ping", &[]) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => {
+                        Err(crate::client_sync::Error::Returned(format!("ping expected null, got: {}", other)))
+                    }
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}

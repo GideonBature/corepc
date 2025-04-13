@@ -311,3 +311,17 @@ fn network__get_connection_count() {
     let count3 = node3.client.get_connection_count().expect("getconnectioncount failed for node3");
     assert!(count3 >= 1, "Node3 should have at least 1 connection");
 }
+
+#[test]
+fn network__ping() {
+    let node_single = Node::with_wallet(Wallet::None, &[]);
+    node_single.client.ping().expect("ping failed for single node");
+
+    let (node1, node2, _node3) = integration_test::three_node_network();
+
+    // Allow time for connections to establish fully
+    std::thread::sleep(std::time::Duration::from_millis(500));
+
+    node1.client.ping().expect("ping failed for node1 (3-node)");
+    node2.client.ping().expect("ping failed for node2 (3-node)");
+}
