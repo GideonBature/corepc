@@ -282,3 +282,13 @@ fn create_load_unload_wallet() {
 
     let _: LoadWallet = node.client.load_wallet(&wallet).expect("loadwallet");
 }
+
+#[test]
+fn wallet__abandon_transaction() {
+    let node = Node::with_wallet(Wallet::Default, &[]);
+    node.fund_wallet();
+
+    let (_, txid) = node.create_mempool_transaction();
+
+    let _ = node.client.abandon_transaction(txid);
+}

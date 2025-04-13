@@ -465,3 +465,20 @@ macro_rules! impl_client_v17__walletprocesspsbt {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `abandontransaction`
+#[macro_export]
+macro_rules! impl_client_v17__abandontransaction {
+    () => {
+        impl Client {
+            pub fn abandon_transaction(&self, txid: Txid) -> Result<()> {
+                match self.call("abandontransaction", &[into_json(txid)?]) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("abandontransaction expected null, got: {}", other))),
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}
