@@ -97,43 +97,131 @@ fn network__add_node() {
 
 #[test]
 fn network__clear_banned() {
-    let node = Node::with_wallet(Wallet::Node, &[]);
+    let node = Node::with_wallet(Wallet::None, &[]);
 
     let dummy_ip = "192.0.2.2";
 
-    match node.client.set_ban(dummy_ip, "add", Some(60), None) {
-        Ok(_) => Ok(()),
-        Err(e) => Err(format!("set_ban failed: {:?}", e))
-    }
+    node.client.set_ban(dummy_ip, SetBanCommand::Add, Some(60), None).expect(&format!("set_ban failed for setup for IP: {}", dummy_ip));
 
     node.client.clear_banned().expect("clearbanned RPC call failed");
 
-    match node.client.list_banned() {
-        Ok(banned_list) => {
-            assert!(banned_list.o.is_empty(), "Banned list should be empty after clearbanned");
-        },
-        Err(e) => Err(format!("list_banned failed during verification: {:?}", e)),
-    }
+    let banned_list = node.client.list_banned().expect("list_banned failed during verification after clear");
+    assert!(banned_list.0.is_empty(), "Banned list should be empty after clearbanned");
 }
 
 #[test]
 fn network__set_ban() {
     let node = Node::with_wallet(Wallet::None, &[]);
-
     let subnet1 = "192.0.2.3";
     let subnet2 = "192.0.2.0/24";
 
+    // Test Case 1: Add subnet1 with default bantime
     node.client.set_ban(subnet1, SetBanCommand::Add, None, None).expect("setban add default time failed");
 
+    // Test Case 2: Add subnet2 with specific duration (e.g., 10 minutes)
     node.client.set_ban(subnet2, SetBanCommand::Add, Some(600), None).expect("setban add specific duration failed");
 
-    let future_timestamp = (std::time::SystemTime::now() + std::time::Duration::from_secs(3600)).duration_since(std::time::UNIX_EPOCH).expect("Time went backwards").as_secs();
-
-    node.client.set_ban(subnet1, SetBanCommand::Add, Some(future_timestamp as i64), Some(true)).expect("setban add absolute time failed");
-
-    node.client.set_ban(subnet1, SetBanCommand::Add, None, Some(true)).expect("setban add absolute default time failed");
-
+    // Test Case 3: Add subnet1 to use absolute time
     node.client.set_ban(subnet1, SetBanCommand::Remove, None, None).expect("setban remove failed for subnet1");
+    node.client.set_ban(subnet2, SetBanCommand::Remove, None, None).expect("setban remove failed for subnet2");
 
-    node.client.set_ban(subnet2, SetBanCommand::Remove, None, None).expect("setban remove failed for subnet2")
+    // Verify removal using list_banned
+    let list_after_removals = node.client.list_banned().expect("list_banned after both removes failed");
+    assert!(list_after_removals.0.is_empty(), "Ban list should be empty after removing both");
+
+    // Re-add subnet1 with absolute time
+    let future_timestamp = (std::time::SystemTime::now() + std::time::Duration::from_secs(3600))
+        .duration_since(std::time::UNIX_EPOCH).expect("Time went backwards").as_secs();
+    node.client.set_ban(subnet1, SetBanCommand::Add, Some(future_timestamp as i64), Some(true)).expect("setban re-add absolute time failed after removing both");
+
+    // Test Case 4: Remove the absolute ban for subnet1
+    node.client.set_ban(subnet1, SetBanCommand::Remove, None, None).expect("setban remove failed for subnet1 (after absolute ban)");
+
+    // Test Case 6: Attempt to remove subnet2 again (it was already removed)
+    // This should fail as it's not currently banned.
+    let remove_subnet2_again_result = node.client.set_ban(subnet2, SetBanCommand::Remove, None, None);
+    assert!(
+        remove_subnet2_again_result.is_err(),
+        "Removing subnet2 again should fail (it's not banned)"
+    );
+
+    if let Err(e) = remove_subnet2_again_result {
+         println!("  Verified removing {} again fails as expected: {:?}", subnet2, e);
+    }
+
+    // Verify final state is empty
+    let final_list = node.client.list_banned().expect("Final list_banned call failed");
+    assert!(final_list.0.is_empty(), "Final ban list should be empty");
+}
+
+#[test]
+fn network__list_banned() {
+    let node = Node::with_wallet(Wallet::None, &[]);
+    let subnet1 = "192.0.2.6";
+
+    let ban_duration_secs = 300i64;
+
+    let initial_list = node.client.list_banned().expect("Initial listbanned call failed");
+    assert!(initial_list.0.is_empty(), "Initial banned list should be empty");
+
+    node.client.set_ban(subnet1, SetBanCommand::Add, Some(ban_duration_secs), None).expect("set_ban call failed during setup");
+
+    let banned_list = node.client.list_banned().expect("Second listbanned call failed");
+
+    assert!(!banned_list.0.is_empty(), "Banned list should not be empty after setban");
+
+    let entry = banned_list.0.iter().find(|entry| entry.address == subnet1 || entry.address.starts_with(&format!("{}/", subnet1))).expect(&format!("Did not find banned subnet {} or {}/32 in list", subnet1, subnet1));
+
+    assert!(entry.ban_created.is_some(), "ban_created should be Some for v17+");
+    assert!(entry.banned_until.is_some(), "banned_until should be Some for v17+");
+
+    #[cfg(any(
+        feature = "v17",
+        feature = "v18",
+        feature = "v19",
+        feature = "v20",
+    ))] {
+        assert!(entry.ban_reason.is_some(), "ban_reason expected to be Some for v17-v20");
+    }
+
+    #[cfg(not(any(
+        feature = "v17",
+        feature = "v18",
+        feature = "v19",
+        feature = "v20",
+    )))] {
+        assert!(entry.ban_reason.is_none(), "ban_reason expected to be None for v21+");
+    }
+
+    #[cfg(any(
+        feature = "v22",
+        feature = "v23",
+        feature = "v24",
+        feature = "v25",
+        feature = "v26",
+        feature = "v27",
+        feature = "v28",
+    ))] {
+        assert!(entry.ban_duration.is_some(), "ban_duration expected to be Some for v22+");
+        assert!(entry.time_remaining.is_some(), "time_remaining expected to be Some for v22+");
+        assert_eq!(entry.ban_duration.unwrap(), ban_duration_secs, "Ban duration mismatch");
+        assert!(entry.time_remaining.unwrap() <= ban_duration_secs && entry.time_remaining.unwrap() >= 0, "Time remaining out of range");
+    }
+
+    #[cfg(not(any(
+        feature = "v22",
+        feature = "v23",
+        feature = "v24",
+        feature = "v25",
+        feature = "v26",
+        feature = "v27",
+        feature = "v28",
+    )))] {
+        assert!(entry.ban_duration.is_none(), "ban_duration expected to be None for v17-v21");
+        assert!(entry.time_remaining.is_none(), "time_remaining expected to be None for v17-v21");
+    }
+
+    node.client.clear_banned().expect("clear_banned call failed during cleanup");
+    let final_list = node.client.list_banned().expect("Final listbanned call failed");
+    assert!(final_list.0.is_empty(), "Banned list should be empty after clearbanned");
 }
