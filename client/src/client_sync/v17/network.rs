@@ -133,3 +133,15 @@ macro_rules! impl_client_v17__setban {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `listbanned`
+#[macro_export]
+macro_rules! impl_client_v17__listbanned {
+    () => {
+        impl Client {
+            pub fn list_banned(&self) -> Result<ListBanned> {
+                self.call("listbanned", &[])
+            }
+        }
+    };
+}

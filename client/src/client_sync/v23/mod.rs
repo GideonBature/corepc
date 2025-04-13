@@ -76,6 +76,7 @@ crate::impl_client_v17__getpeerinfo!();
 crate::impl_client_v17__addnode!();
 crate::impl_client_v17__clearbanned!();
 crate::impl_client_v17__setban!();
+crate::impl_client_v17__listbanned!();
 
 // == Rawtransactions ==
 crate::impl_client_v17__createrawtransaction!();

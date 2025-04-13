@@ -257,4 +257,18 @@ pub struct ListBanned(pub Vec<Banned>);
 
 /// An item from the list returned by the JSON-RPC method `listbanned`
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct Banned(String); // FIXME: The docs are empty so I don't know what shape this is.
+pub struct Banned {
+    /// The IP/Subnet of the banned node (Present in all versions)
+    pub address: String,
+    /// The UNIX epoch time the ban was created (Present v17+)
+    /// None if missing in JSON
+    pub ban_created: Option<i64>,
+    /// The UNIX epoch time the ban expires (Present v17+)
+    pub banned_until: Option<i64>,
+    /// The ban reason string (Present only in v17 - v20)
+    pub ban_reason: Option<String>,
+    /// The ban duraction, in seconds (Present v22+)
+    pub ban_duration: Option<i64>,
+    /// The time remaining until ban expires, in seconds (Present v22+)
+    pub time_remaining: Option<i64>,
+}
