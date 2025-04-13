@@ -225,3 +225,67 @@ fn network__list_banned() {
     let final_list = node.client.list_banned().expect("Final listbanned call failed");
     assert!(final_list.0.is_empty(), "Banned list should be empty after clearbanned");
 }
+
+#[test]
+fn network__disconnect_node_error_cases() {
+    let node = Node::with_wallet(Wallet::None, &[]);
+
+    // Test providing both - expect specific error
+    let result_both = node.client.disconnect_node(Some("127.0.0.1:1"), Some(1));
+    assert!(result_both.is_err(), "Expected disconnect_node to return Err when both args are provided");
+
+    // Test providing none - expect specific error
+    let result_none = node.client.disconnect_node(None, None);
+    assert!(result_none.is_err(), "Expected disconnect_node to return Err when no args are provided");
+}
+
+#[test]
+fn network__disconnect_node_success_cases() {
+    // Setup 3 connected nodes
+    let (node1, node2, _node3) = integration_test::three_node_network();
+    println!("Node network setup complete.");
+
+    // Get Peer Info
+    let node1_peers = node1.client.get_peer_info().expect("Node1 getpeerinfo failed");
+
+    assert_eq!(node1_peers.0.len(), 1, "Node1 should have exactly one peer (Node2)");
+    let node2_info = &node1_peers.0[0]; // Get the first (only) peer info
+    let node2_id = node2_info.id;
+
+    let node2_addr_str = &node2_info.address;
+
+    let node2_peers = node2.client.get_peer_info().expect("Node2 getpeerinfo failed");
+
+    let node3_info = node2_peers.0.iter()
+         .find(|p| p.id != node1.client.get_network_info().expect("getnetworkinfo").local_addresses.get(0).map_or(0, |a| a.port as u32))
+         .or_else(|| node2_peers.0.get(1))
+         .expect("Node2 should see Node3");
+
+    let node3_id = node3_info.id;
+
+    // Test Disconnect by Address
+    node1.client.disconnect_node(Some(node2_addr_str), None) // Pass &String here
+        .expect("disconnect_node by address failed");
+
+    // Verify disconnection
+    std::thread::sleep(std::time::Duration::from_millis(500));
+    let node1_peers_after_addr_disconnect = node1.client.get_peer_info()
+        .expect("Node1 getpeerinfo after addr disconnect failed");
+    assert!(
+        node1_peers_after_addr_disconnect.0.iter().find(|p| p.id == node2_id).is_none(),
+        "Node2 should be disconnected from Node1 after disconnect by address"
+    );
+
+    // Test Disconnect by Node ID
+    node2.client.disconnect_node(None, Some(node3_id.into()))
+         .expect("disconnect_node by nodeid failed");
+
+    // Verify disconnection
+    std::thread::sleep(std::time::Duration::from_millis(500));
+    let node2_peers_after_id_disconnect = node2.client.get_peer_info()
+        .expect("Node2 getpeerinfo after id disconnect failed");
+    assert!(
+        node2_peers_after_id_disconnect.0.iter().find(|p| p.id == node3_id).is_none(),
+        "Node3 should be disconnected from Node2 after disconnect by nodeid"
+    );
+}

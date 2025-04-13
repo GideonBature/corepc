@@ -145,3 +145,41 @@ macro_rules! impl_client_v17__listbanned {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `disconnectnode`
+#[macro_export]
+macro_rules! impl_client_v17__disconnectnode {
+    () => {
+        impl Client {
+            pub fn disconnect_node(
+                &self,
+                address: Option<&str>,
+                nodeid: Option<u64>,
+            ) -> Result<()> {
+                let params: Vec<serde_json::Value> = match (address, nodeid) {
+                    (Some(addr), None) => {
+                        vec![addr.into()]
+                    }
+                    (None, Some(id)) => {
+                        vec![serde_json::Value::String(String::new()), id.into()]
+                    }
+                    (Some(_), Some(_)) => {
+                        return Err(crate::client_sync::Error::DisconnectNodeArgsBoth);
+                    }
+                    (None, None) => {
+                        return Err(crate::client_sync::Error::DisconnectNodeArgsNone);
+                    }
+                };
+
+                match self.call("disconnectnode", &params) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => {
+                        Err(crate::client_sync::Error::Returned(format!("disconnectnode expected null, got: {}", other)))
+                    }
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}

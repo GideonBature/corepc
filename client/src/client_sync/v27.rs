@@ -74,6 +74,7 @@ crate::impl_client_v26__addnode!();
 crate::impl_client_v17__clearbanned!();
 crate::impl_client_v17__setban!();
 crate::impl_client_v17__listbanned!();
+crate::impl_client_v17__disconnectnode!();
 
 // == Rawtransactions ==
 crate::impl_client_v17__createrawtransaction!();
