@@ -482,3 +482,20 @@ macro_rules! impl_client_v17__abandontransaction {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `abortrescan`
+#[macro_export]
+macro_rules! impl_client_v17__abortrescan {
+    () => {
+        impl Client {
+            pub fn abort_rescan(&self) -> Result<()> {
+                match self.call("abortrescan", &[]) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("abortrescan expected null, got: {}", other))),
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}

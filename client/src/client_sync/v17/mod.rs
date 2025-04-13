@@ -125,6 +125,7 @@ crate::impl_client_v17__unloadwallet!();
 crate::impl_client_v17__walletcreatefundedpsbt!();
 crate::impl_client_v17__walletprocesspsbt!();
 crate::impl_client_v17__abandontransaction!();
+crate::impl_client_v17__abortrescan!();
 
 /// Argument to the `Client::get_new_address_with_type` function.
 ///

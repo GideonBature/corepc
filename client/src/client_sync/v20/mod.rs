@@ -4,6 +4,7 @@
 //!
 //! We ignore option arguments unless they effect the shape of the returned JSON data.
 pub mod network;
+pub mod wallet;
 
 use std::collections::BTreeMap;
 use std::path::Path;
@@ -118,3 +119,4 @@ crate::impl_client_v17__unloadwallet!();
 crate::impl_client_v17__walletcreatefundedpsbt!();
 crate::impl_client_v17__walletprocesspsbt!();
 crate::impl_client_v17__abandontransaction!();
+crate::impl_client_v20__abortrescan!();

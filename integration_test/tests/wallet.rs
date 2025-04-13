@@ -292,3 +292,27 @@ fn wallet__abandon_transaction() {
 
     let _ = node.client.abandon_transaction(txid);
 }
+
+#[test]
+fn wallet__abort_rescan() {
+    let node = Node::with_wallet(Wallet::Default, &[]);
+
+    let result = node.client.abort_rescan();
+
+    #[cfg(any(
+        feature = "v17",
+        feature = "v18",
+        feature = "v19",
+    ))] {
+        result.expect("abortrescan RPC call failed (v17-v19)");
+    }
+
+    #[cfg(not(any(
+        feature = "v17",
+        feature = "v18",
+        feature = "v19",
+    )))] {
+        let success = result.expect("abortrescan RPC call failed (v20+");
+        assert!(!success, "abortrescan should return false when no scan is active (v20+)");
+    }
+}
