@@ -289,3 +289,25 @@ fn network__disconnect_node_success_cases() {
         "Node3 should be disconnected from Node2 after disconnect by nodeid"
     );
 }
+
+#[test]
+fn network__get_connection_count() {
+    let node_single = Node::with_wallet(Wallet::None, &[]);
+    let count_single = node_single.client.get_connection_count().expect("getconnectioncount failed for single node");
+
+    assert_eq!(count_single, 0, "Single node should have 0 connections");
+
+    let (node1, node2, node3) = integration_test::three_node_network();
+
+    // Allow time for connection for establish fully
+    std::thread::sleep(std::time::Duration::from_millis(500));
+
+    let count1 = node1.client.get_connection_count().expect("getconnectioncount failed for node1");
+    assert!(count1 >= 1, "Node1 should have at least 1 connection");
+
+    let count2 = node2.client.get_connection_count().expect("getconnectioncount failed for node2");
+    assert!(count2 >= 1, "Node2 should have at least 1 connection");
+
+    let count3 = node3.client.get_connection_count().expect("getconnectioncount failed for node3");
+    assert!(count3 >= 1, "Node3 should have at least 1 connection");
+}

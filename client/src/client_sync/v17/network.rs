@@ -183,3 +183,15 @@ macro_rules! impl_client_v17__disconnectnode {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `getconnectioncount`
+#[macro_export]
+macro_rules! impl_client_v17__getconnectioncount {
+    () => {
+        impl Client {
+            pub fn get_connection_count(&self) -> Result<u64> {
+                self.call("getconnectioncount", &[])
+            }
+        }
+    };
+}
