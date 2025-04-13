@@ -5,7 +5,7 @@
 //! Requires `Client` to be in scope.
 //!
 //! Specifically this is methods found under the `== Network ==` section of the
-//! API docs of Bitcoin Core `v0.17`.
+//! API docs of Bitcoin Core `v26`.
 //!
 //! See, or use the `define_jsonrpc_minreq_client!` macro to define a `Client`.
 

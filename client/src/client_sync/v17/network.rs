@@ -214,3 +214,22 @@ macro_rules! impl_client_v17__ping {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `setnetworkactive`
+#[macro_export]
+macro_rules! impl_client_v17__setnetworkactive {
+    () => {
+        impl Client {
+            pub fn set_network_active(&self, state: bool) -> Result<()> {
+                match self.call("setnetworkactive", &[state.into()]) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => {
+                        Err(crate::client_sync::Error::Returned(format!("setnetworkactive expected null, got: {}", other)))
+                    }
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}

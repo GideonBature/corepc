@@ -325,3 +325,72 @@ fn network__ping() {
     node1.client.ping().expect("ping failed for node1 (3-node)");
     node2.client.ping().expect("ping failed for node2 (3-node)");
 }
+
+#[test]
+fn network__set_network_active() {
+    let (node1, _node2, _node3) = integration_test::three_node_network();
+
+    // Allow time for initial connections
+    std::thread::sleep(std::time::Duration::from_millis(1000));
+
+    // Verify initial state
+    let initial_info_n1 = node1.client.get_network_info().expect("Initial getnetworkinfo failed on node1");
+    assert!(initial_info_n1.network_active, "Network should be active initially");
+
+    let initial_conns_n1 = node1.client.get_connection_count().expect("Initial getconnectioncount failed on node1");
+    assert!(initial_conns_n1 > 0, "Node1 should have connections initially");
+
+    let result_disable = node1.client.set_network_active(false);
+
+    #[cfg(any(
+        feature = "v17",
+        feature = "v18",
+        feature = "v19"
+    ))] {
+        result_disable.expect("setnetworkactive(false) failed (v17-v19)");
+    }
+
+    #[cfg(not(any(
+        feature = "v17",
+        feature = "v18",
+        feature = "v19",
+    )))] {
+        let return_val = result_disable.expect("setnetworkactive(false) failed (v20+)");
+        assert!(!return_val, "setnetworkactive(false) should return false (v20+)");
+    }
+
+    std::thread::sleep(std::time::Duration::from_millis(1000));
+    let info_after_disable = node1.client.get_network_info().expect("getnetworkinfo after disable failed");
+    assert!(!info_after_disable.network_active, "Network should be inactive after setnetworkactive(false)");
+
+    let conns_after_disable = node1.client.get_connection_count().expect("getconnectioncount after disable failed");
+    assert!(conns_after_disable < initial_conns_n1 || conns_after_disable == 0, "Connection count should drop after disable");
+
+    let result_enable = node1.client.set_network_active(true);
+
+    #[cfg(any(
+        feature = "v17",
+        feature = "v18",
+        feature = "v19",
+    ))] {
+        result_enable.expect("setnetworkactive(true) failed (v17-v19)");
+    }
+
+    #[cfg(not(any(
+        feature = "v17",
+        feature = "v18",
+        feature = "v19",
+    )))] {
+        let return_val = result_enable.expect("setnetworkactive(true) failed (v20+)");
+        assert!(return_val, "setnetworkactive(true) returned {} as expected (v20+).", return_val);
+    }
+
+    // Verify effect (allow time for reconnections)
+    std::thread::sleep(std::time::Duration::from_millis(2000));
+
+    let info_after_enable = node1.client.get_network_info().expect("getnetworkinfo after enable failed");
+    assert!(info_after_enable.network_active, "Network should be active after setnetworkactive(true)");
+
+    let conns_after_enable = node1.client.get_connection_count().expect("getconnectioncount after enable failed");
+    assert!(conns_after_enable > conns_after_disable || conns_after_enable >= 1, "Connections should increase or be >= 1 after enable");
+}

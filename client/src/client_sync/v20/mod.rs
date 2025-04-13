@@ -3,6 +3,7 @@
 //! A JSON-RPC client for testing against Bitcoin Core `v0.20`.
 //!
 //! We ignore option arguments unless they effect the shape of the returned JSON data.
+pub mod network;
 
 use std::collections::BTreeMap;
 use std::path::Path;
@@ -76,6 +77,7 @@ crate::impl_client_v17__listbanned!();
 crate::impl_client_v17__disconnectnode!();
 crate::impl_client_v17__getconnectioncount!();
 crate::impl_client_v17__ping!();
+crate::impl_client_v20__setnetworkactive!();
 
 // == Rawtransactions ==
 crate::impl_client_v17__createrawtransaction!();

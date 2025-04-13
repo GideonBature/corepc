@@ -61,7 +61,7 @@ pub const METHODS: &[Method] = &[
     Method::new_no_model("listbanned", "ListBanned", "list_banned"), // v17 docs seem wrong, says no return.
     Method::new_nothing("ping", "ping"),
     Method::new_nothing("setban", "set_ban"),
-    Method::new_nothing("setnetworkactive", "set_network_active"),
+    Method::new_bool("setnetworkactive", "set_network_active"),
     Method::new_modelled("analyzepsbt", "AnalyzePsbt", "analyze_psbt"),
     Method::new_nothing("combinepsbt", "combine_psbt"),
     Method::new_nothing("combinerawtransaction", "combine_raw_transaction"),
