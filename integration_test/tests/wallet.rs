@@ -11,6 +11,7 @@ use integration_test::{Node, NodeExt as _, Wallet};
 use node::AddressType;
 use node::vtype::*;             // All the version specific types.
 use node::mtype;
+use std::fs;
 
 #[test]
 #[cfg(feature = "TODO")]
@@ -315,4 +316,22 @@ fn wallet__abort_rescan() {
         let success = result.expect("abortrescan RPC call failed (v20+");
         assert!(!success, "abortrescan should return false when no scan is active (v20+)");
     }
+}
+
+#[test]
+fn wallet__backup_wallet() {
+    let node = Node::with_wallet(Wallet::Default, &[]);
+
+    let backup_dest = integration_test::random_tmp_file();
+
+    if backup_dest.exists() {
+        fs::remove_file(&backup_dest).expect("Failed to remove pre-existing temp file");
+    }
+
+    node.client.backup_wallet(&backup_dest).expect("backupwallet RPC call failed");
+
+    assert!(backup_dest.exists(), "Backup file should exist at destination");
+    assert!(backup_dest.is_file(), "Backup destination should be a file");
+
+    fs::remove_file(&backup_dest).expect("Failed to remove backup file during cleanup");
 }

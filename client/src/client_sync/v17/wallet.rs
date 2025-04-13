@@ -499,3 +499,21 @@ macro_rules! impl_client_v17__abortrescan {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `backupwallet`
+#[macro_export]
+macro_rules! impl_client_v17__backupwallet {
+    () => {
+        impl Client {
+            pub fn backup_wallet(&self, destination: &Path) -> Result<()> {
+                let dest_str = destination.to_string_lossy();
+                match self.call("backupwallet", &[dest_str.as_ref().into()]) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("backupwallet expected null, got: {}", other))),
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}
