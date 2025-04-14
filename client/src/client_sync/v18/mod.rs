@@ -124,3 +124,4 @@ crate::impl_client_v17__encryptwallet!();
 crate::impl_client_v17__importaddress!();
 crate::impl_client_v17__importprivkey!();
 crate::impl_client_v17__importprunedfunds!();
+crate::impl_client_v17__importpubkey!();

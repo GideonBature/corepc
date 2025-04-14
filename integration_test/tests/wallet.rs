@@ -478,3 +478,38 @@ fn wallet__import_pruned_funds() {
 
     let _ = node.client.import_pruned_funds(dummy_raw_tx, dummy_tx_proof);
 }
+
+#[test]
+fn wallet__import_pubkey() {
+    let node = {
+        #[cfg(any(
+            feature = "v17",
+            feature = "v18",
+            feature = "v19",
+        ))] {
+            Node::with_wallet(Wallet::Default, &[])
+        }
+
+        #[cfg(not(any(
+            feature = "v17",
+            feature = "v18",
+            feature = "v19",
+        )))] {
+            let node = Node::with_wallet(Wallet::None, &["-deprecatedrpc=create_bdb"]);
+            let wallet_name = format!("legacy_importpubkey_{}", rand::random::<u32>());
+            node.client.create_legacy_wallet(&wallet_name).expect("Failed to create legacy wallet for v20+");
+            node
+        }
+    };
+
+    let secp = Secp256k1::new();
+    let mut rng = rand::thread_rng();
+
+    let secret_key = SecretKey::new(&mut rng);
+    let public_key = PublicKey::from_secret_key(&secp, &secret_key);
+    let pub_key = bitcoin::PublicKey::new(public_key);
+
+    // Test Case 1: Import with default label and rescan
+    let label = "imported_pubkey";
+    node.client.import_pubkey(&pub_key, Some(label), Some(false)).expect("importpubkey failed");
+}
