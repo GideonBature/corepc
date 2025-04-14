@@ -122,3 +122,4 @@ crate::impl_client_v20__abortrescan!();
 crate::impl_client_v17__backupwallet!();
 crate::impl_client_v20__encryptwallet!();
 crate::impl_client_v17__importaddress!();
+crate::impl_client_v17__importprivkey!();

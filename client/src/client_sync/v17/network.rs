@@ -233,3 +233,37 @@ macro_rules! impl_client_v17__setnetworkactive {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `importprivkey`
+#[macro_export]
+macro_rules! impl_client_v17__importprivkey {
+    () => {
+        use bitcoin::PrivateKey;
+        impl Client {
+            pub fn import_priv_key(
+                &self,
+                privkey: &PrivateKey,
+                label: Option<&str>,
+                rescan: Option<bool>,
+            ) -> Result<()> {
+                let privkey_wif = privkey.to_wif();
+                let mut params = vec![privkey_wif.into()];
+
+                if label.is_some() || rescan.is_some() {
+                    params.push(label.map_or(serde_json::Value::String("".into()), |l| l.into()));
+                }
+
+                if let Some(r) = rescan {
+                    params.push(r.into());
+                }
+
+                match self.call("importprivkey", &params) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("importprivkey expected null, got: {}", other))),
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}

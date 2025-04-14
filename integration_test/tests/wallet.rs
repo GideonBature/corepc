@@ -17,7 +17,7 @@ use bitcoin::{
     Address,
     Network,
     secp256k1::{SecretKey, PublicKey},
-    key::{CompressedPublicKey, Secp256k1}
+    key::{CompressedPublicKey, Secp256k1, PrivateKey}
 };
 
 #[test]
@@ -414,4 +414,39 @@ fn wallet__import_address() {
         let label = "imported_watchonly";
 
         node.client.import_address(&ext_addr_str2, Some(label), Some(false), Some(false)).expect("importaddress with options failed");
+}
+
+
+
+#[test]
+fn wallet__import_priv_key() {
+    let node = {
+        #[cfg(any(
+            feature = "v17",
+            feature = "v18",
+            feature = "v19",
+        ))] {
+            Node::with_wallet(Wallet::Default, &[])
+        }
+
+        #[cfg(not(any(
+            feature = "v17",
+            feature = "v18",
+            feature = "v19",
+        )))] {
+            let node = Node::with_wallet(Wallet::None, &["-deprecatedrpc=create_bdb"]);
+            let wallet_name = format!("legacy_importprivkey_{}", rand::random::<u32>());
+            node.client.create_legacy_wallet(&wallet_name).expect("Failed to create legacy wallet for v20+ test");
+            node
+        }
+    };
+
+    let mut rng = rand::thread_rng();
+
+    // Test Case 1: Import key with label, no rescan
+    let secret_key = SecretKey::new(&mut rng);
+    let private_key = PrivateKey::new(secret_key, Network::Regtest);
+
+    let label = "imported_privkey";
+    let _ = node.client.import_priv_key(&private_key, Some(label), Some(false)).expect("importprivkey failed");
 }
