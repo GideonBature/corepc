@@ -126,6 +126,7 @@ crate::impl_client_v17__backupwallet!();
 crate::impl_client_v20__encryptwallet!();
 crate::impl_client_v17__importaddress!();
 crate::impl_client_v17__importprivkey!();
+crate::impl_client_v17__importprunedfunds!();
 
 /// Argument to the `Client::get_new_address_with_type` function.
 ///

@@ -416,8 +416,6 @@ fn wallet__import_address() {
         node.client.import_address(&ext_addr_str2, Some(label), Some(false), Some(false)).expect("importaddress with options failed");
 }
 
-
-
 #[test]
 fn wallet__import_priv_key() {
     let node = {
@@ -449,4 +447,34 @@ fn wallet__import_priv_key() {
 
     let label = "imported_privkey";
     let _ = node.client.import_priv_key(&private_key, Some(label), Some(false)).expect("importprivkey failed");
+}
+
+#[test]
+fn wallet__import_pruned_funds() {
+    let node = {
+        #[cfg(any(
+            feature = "v17",
+            feature = "v18",
+            feature = "v19",
+        ))] {
+            Node::with_wallet(Wallet::Default, &[])
+        }
+
+        #[cfg(not(any(
+            feature = "v17",
+            feature = "v18",
+            feature = "v19",
+        )))] {
+            let node = Node::with_wallet(Wallet::None, &["-deprecatedrpc=create_bdb"]);
+            let wallet_name = format!("legacy_pruned_{}", rand::random::<u32>());
+            node.client.create_legacy_wallet(&wallet_name).expect("Failed to create legacy wallet for v20+ test");
+
+            node
+        }
+    };
+
+    let dummy_raw_tx = "01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff01e8030000000000001976a914000000000000000000000000000000000000000088ac00000000";
+    let dummy_tx_proof = "00";
+
+    let _ = node.client.import_pruned_funds(dummy_raw_tx, dummy_tx_proof);
 }

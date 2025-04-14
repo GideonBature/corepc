@@ -573,3 +573,26 @@ macro_rules! impl_client_v17__importaddress {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `importprunedfunds`
+#[macro_export]
+macro_rules! impl_client_v17__importprunedfunds {
+    () => {
+        impl Client {
+            pub fn import_pruned_funds(
+                &self,
+                raw_transaction: &str,
+                txout_proof: &str,
+            ) -> Result<()> {
+                match self.call("importprunedfunds", &[raw_transaction.into(), txout_proof.into()]) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => Err(crate::client_sync::Error::Returned(format!(
+                        "importprunedfunds expected null, got: {}", other
+                    ))),
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}
