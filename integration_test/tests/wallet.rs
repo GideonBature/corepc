@@ -290,14 +290,12 @@ fn wallet__abandon_transaction() {
     node.fund_wallet();
 
     let (_, txid) = node.create_mempool_transaction();
-
     let _ = node.client.abandon_transaction(txid);
 }
 
 #[test]
 fn wallet__abort_rescan() {
     let node = Node::with_wallet(Wallet::Default, &[]);
-
     let result = node.client.abort_rescan();
 
     #[cfg(any(
@@ -321,7 +319,6 @@ fn wallet__abort_rescan() {
 #[test]
 fn wallet__backup_wallet() {
     let node = Node::with_wallet(Wallet::Default, &[]);
-
     let backup_dest = integration_test::random_tmp_file();
 
     if backup_dest.exists() {
@@ -329,9 +326,36 @@ fn wallet__backup_wallet() {
     }
 
     node.client.backup_wallet(&backup_dest).expect("backupwallet RPC call failed");
-
     assert!(backup_dest.exists(), "Backup file should exist at destination");
     assert!(backup_dest.is_file(), "Backup destination should be a file");
 
     fs::remove_file(&backup_dest).expect("Failed to remove backup file during cleanup");
+}
+
+#[test]
+fn wallet__encrypt_wallet() {
+    let wallet_name = format!("test_encrypt_{}", rand::random::<u32>());
+    let node = Node::with_wallet(Wallet::None, &[]);
+    let _ = node.client.create_wallet(&wallet_name);
+
+    let passphrase = "my_secret_test_passphrase";
+    let encrypt_result = node.client.encrypt_wallet(passphrase);
+
+    #[cfg(any(
+        feature="v17",
+        feature="v18",
+        feature="v19"))]
+    {
+        encrypt_result.expect("encrypt_wallet RPC call failed (v17-v19)");
+    }
+
+    #[cfg(not(any(
+        feature="v17",
+        feature="v18",
+        feature="v19")))]
+    {
+        let return_msg = encrypt_result.expect("encrypt_wallet RPC call failed (v20+)");
+        assert!(!return_msg.is_empty(), "encrypt_wallet should return a non-empty string (v20+)");
+        assert!(return_msg.contains("wallet encrypted"), "Return message should mention encryption");
+    }
 }

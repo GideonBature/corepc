@@ -517,3 +517,20 @@ macro_rules! impl_client_v17__backupwallet {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `encryptwallet`
+#[macro_export]
+macro_rules! impl_client_v17__encryptwallet {
+    () => {
+        impl Client {
+            pub fn encrypt_wallet(&self, passphrase: &str) -> Result<()> {
+                match self.call("encryptwallet", &[passphrase.into()]) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(_) => Ok(()),
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}

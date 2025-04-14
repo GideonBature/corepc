@@ -122,3 +122,4 @@ crate::impl_client_v17__walletprocesspsbt!();
 crate::impl_client_v17__abandontransaction!();
 crate::impl_client_v17__abortrescan!();
 crate::impl_client_v17__backupwallet!();
+crate::impl_client_v17__encryptwallet!();

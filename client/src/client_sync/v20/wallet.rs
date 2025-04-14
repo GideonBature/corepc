@@ -20,3 +20,15 @@ macro_rules! impl_client_v20__abortrescan {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `encryptwallet`
+#[macro_export]
+macro_rules! impl_client_v20__encryptwallet {
+    () => {
+        impl Client {
+            pub fn encrypt_wallet(&self, passphrase: &str) -> Result<String> {
+                self.call("encryptwallet", &[passphrase.into()])
+            }
+        }
+    };
+}
