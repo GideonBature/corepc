@@ -534,3 +534,42 @@ macro_rules! impl_client_v17__encryptwallet {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `importaddress`
+#[macro_export]
+macro_rules! impl_client_v17__importaddress {
+    () => {
+        impl Client {
+            pub fn import_address(
+                &self,
+                address_or_script: &str,
+                label: Option<&str>,
+                rescan: Option<bool>,
+                p2sh: Option<bool>,
+            ) -> Result<()> {
+                let mut params = vec![address_or_script.into()];
+
+                if label.is_some() || rescan.is_some() || p2sh.is_some() {
+                    params.push(label.map_or(serde_json::Value::String("".into()), |l| l.into()));
+                }
+
+                if rescan.is_some() || p2sh.is_some() {
+                    params.push(rescan.map_or(true.into(), |r| r.into()));
+                }
+
+                if let Some(p) = p2sh {
+                    params.push(p.into());
+                }
+
+                match self.call("importaddress", &params) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => Err(crate::client_sync::Error::Returned(format!(
+                        "importaddress expected null, got: {}", other
+                    ))),
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}

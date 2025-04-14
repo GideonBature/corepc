@@ -13,6 +13,13 @@ use node::vtype::*;             // All the version specific types.
 use node::mtype;
 use std::fs;
 
+use bitcoin::{
+    Address,
+    Network,
+    secp256k1::{SecretKey, PublicKey},
+    key::{CompressedPublicKey, Secp256k1}
+};
+
 #[test]
 #[cfg(feature = "TODO")]
 fn wallet__add_multisig_address__modelled() {
@@ -358,4 +365,53 @@ fn wallet__encrypt_wallet() {
         assert!(!return_msg.is_empty(), "encrypt_wallet should return a non-empty string (v20+)");
         assert!(return_msg.contains("wallet encrypted"), "Return message should mention encryption");
     }
+}
+
+#[test]
+fn wallet__import_address() {
+    let node = {
+        #[cfg(any(
+            feature = "v17",
+            feature = "v18",
+            feature = "v19",
+        ))] {
+            Node::with_wallet(Wallet::Default, &[])
+        }
+
+        #[cfg(not(any(
+            feature = "v17",
+            feature = "v18",
+            feature = "v19",
+        )))] {
+            let node = Node::with_wallet(Wallet::None, &["-deprecatedrpc=create_bdb"]);
+            let wallet_name = format!("legacy_import_{}", rand::random::<u32>());
+            node.client.create_legacy_wallet(&wallet_name).expect("Failed to create legacy wallet for v20+ test");
+
+            node
+        }
+    };
+
+        let secp = Secp256k1::new();
+        let mut rng = rand::thread_rng();
+
+        // Test Case 1: Import with default label and rescan
+        let secret_key = SecretKey::new(&mut rng);
+        let public_key = PublicKey::from_secret_key(&secp, &secret_key);
+        let compressed_public_key = CompressedPublicKey(public_key);
+
+        let ext_addr = Address::p2wpkh(&compressed_public_key, Network::Regtest);
+        let ext_addr_str = ext_addr.to_string();
+
+        node.client.import_address(&ext_addr_str, None, None, None).expect("importaddress with defaults failed");
+
+        // Test Case 2" Import with label, no rescan, no p2sh
+        let secret_key2 = SecretKey::new(&mut rng);
+        let public_key2 = PublicKey::from_secret_key(&secp, &secret_key2);
+        let compressed_public_key2 = CompressedPublicKey(public_key2);
+
+        let ext_addr2 = Address::p2wpkh(&compressed_public_key2, Network::Regtest);
+        let ext_addr_str2 = ext_addr2.to_string();
+        let label = "imported_watchonly";
+
+        node.client.import_address(&ext_addr_str2, Some(label), Some(false), Some(false)).expect("importaddress with options failed");
 }
