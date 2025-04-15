@@ -321,10 +321,10 @@ macro_rules! impl_client_v17__savemempool {
     () => {
         impl Client {
             // Dumps the mempool to disk (v17 - v22)
-            pub fn save_mempool(&self) -> Result<()> {
+            pub fn save_mempool(&self) -> Result<SaveMempool> {
                 match self.call("savemempool", &[]) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(_) => Ok(()),
+                    Ok(serde_json::Value::Null) => Ok(SaveMempool),
+                    Ok(_) => Ok(SaveMempool),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -339,7 +339,7 @@ macro_rules! impl_client_v17__verifychain {
         impl Client {
             /// Verifies blockchain database using default checklevel and nblocks.
             /// Returns true if verification finised successfully.
-            pub fn verify_chain_default(&self) -> Result<bool> {
+            pub fn verify_chain_default(&self) -> Result<VerifyChain> {
                 // Core returns a boolean directly
                 self.call("verifychain", &[])
             }
@@ -355,7 +355,7 @@ macro_rules! impl_client_v17__verifychain {
                 &self,
                 checklevel: Option<u32>,
                 nblocks: Option<u32>,
-            ) -> Result<bool> {
+            ) -> Result<VerifyChain> {
                 // Construct params carefully for optional args
                 // Bitcoin Core often uses positional nulls for omitted optional args
                 let params = match (checklevel, nblocks) {

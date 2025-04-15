@@ -259,7 +259,7 @@ pub use crate::{
         PeerInfo, RescanBlockchain, ScriptPubkey, SendMany, SendRawTransaction, SendToAddress,
         SignErrorData, SignMessage, SignRawTransactionWithWallet, SoftforkReject,
         TransactionCategory, UploadTarget, VerifyTxOutProof, WalletCreateFundedPsbt,
-        WalletProcessPsbt,
+        WalletProcessPsbt, SaveMempool, VerifyChain,
     },
     v18::{ActiveCommand, GetRpcInfo},
     v19::{

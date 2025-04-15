@@ -33,6 +33,8 @@ pub mod model;
 
 use core::fmt;
 
+use serde::{Deserialize, Serialize};
+
 use bitcoin::amount::ParseAmountError;
 use bitcoin::{Amount, FeeRate};
 

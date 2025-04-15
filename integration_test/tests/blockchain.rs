@@ -351,15 +351,18 @@ fn blockchain__verify_chain() {
 
     // Test with default parameters
     let result_default = node.client.verify_chain_default().expect("veifychain with defaults failed");
-    assert!(result_default, "verifychain with defaults should return true on a clean chain");
+    let result_default_value = result_default.0;
+    assert!(result_default_value, "verifychain with defaults should return true on a clean chain");
 
     // Test with specific parameters (e.g., check first 2 blocks thoroughly)
     let checklevel = Some(4u32);
     let nblocks = Some(2u32);
     let result_specific = node.client.verify_chain(checklevel, nblocks).expect("verifychain with specific args failed");
-    assert!(result_specific, "verifychain with specific args should return true on a clean chain");
+    let result_specific_value = result_specific.0;
+    assert!(result_specific_value, "verifychain with specific args should return true on a clean chain");
 
     // Test with only nblocks (requires null for checklevel)
     let result_nblocks_only = node.client.verify_chain(None, Some(1)).expect("verifychain with nblocks only failed");
-    assert!(result_nblocks_only, "verifychain with nblocks only should return true");
+    let result_nblocks_only_value = result_nblocks_only.0;
+    assert!(result_nblocks_only_value, "verifychain with nblocks only should return true");
 }

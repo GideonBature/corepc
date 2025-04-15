@@ -266,7 +266,7 @@ pub use crate::{
         ListUnspentItem, ListWallets, Locked, PeerInfo, RescanBlockchain, SendMany,
         SendRawTransaction, SendToAddress, SignErrorData, SignMessage,
         SignRawTransactionWithWallet, SoftforkReject, TransactionCategory, UploadTarget,
-        VerifyTxOutProof, WalletCreateFundedPsbt, WalletProcessPsbt,
+        VerifyTxOutProof, WalletCreateFundedPsbt, WalletProcessPsbt, VerifyChain,
     },
     v18::{ActiveCommand, GetRpcInfo},
     v19::{
