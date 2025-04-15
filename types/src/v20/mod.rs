@@ -225,6 +225,7 @@
 
 // JSON-RPC types by API section.
 mod control;
+mod network;
 
 #[doc(inline)]
 pub use self::control::Logging;
@@ -264,4 +265,5 @@ pub use crate::{
         MempoolEntry, MempoolEntryError, MempoolEntryFees, MempoolEntryFeesError, Softfork,
         SoftforkType,
     },
+    v20::network::SetNetworkActive,
 };

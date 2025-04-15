@@ -270,5 +270,5 @@ pub use crate::{
         MempoolEntry, MempoolEntryError, MempoolEntryFees, MempoolEntryFeesError, Softfork,
         SoftforkType,
     },
-    v20::Logging,
+    v20::{Logging, SetNetworkActive},
 };

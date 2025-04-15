@@ -14,10 +14,9 @@
 macro_rules! impl_client_v20__setnetworkactive {
     () => {
         impl Client {
-            pub fn set_network_active(&self, state: bool) -> Result<bool> {
+            pub fn set_network_active(&self, state: bool) -> Result<SetNetworkActive> {
                 self.call("setnetworkactive", &[state.into()])
             }
         }
     };
 }
-

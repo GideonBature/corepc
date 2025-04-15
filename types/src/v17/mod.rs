@@ -246,7 +246,7 @@ pub use self::{
     network::{
         AddedNode, AddedNodeAddress, Banned, GetAddedNodeInfo, GetNetTotals, GetNetworkInfo,
         GetNetworkInfoAddress, GetNetworkInfoError, GetNetworkInfoNetwork, GetPeerInfo, ListBanned,
-        PeerInfo, UploadTarget
+        PeerInfo, UploadTarget, AddNode, ClearBanned, SetBan, DisconnectNode, Ping, SetNetworkActive, ImportPrivKey, GetConnectionCount,
     },
     raw_transactions::{
         CreateRawTransaction, FundRawTransaction, FundRawTransactionError, SendRawTransaction,

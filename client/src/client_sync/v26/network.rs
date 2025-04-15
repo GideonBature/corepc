@@ -19,7 +19,7 @@ macro_rules! impl_client_v26__addnode {
                 node: &str,
                 command: AddNodeCommand,
                 v2transport: Option<bool>,
-            ) -> Result<()> {
+            ) -> Result<AddNode> {
                 let mut params = vec![node.into(), serde_json::to_value(command)?,];
 
                 if let Some(v2) = v2transport {
@@ -27,8 +27,8 @@ macro_rules! impl_client_v26__addnode {
                 }
 
                 match self.call("addnode", &params) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(serde_json::Value::Null) => Ok(AddNode),
+                    Ok(ref val) if val.is_null() => Ok(AddNode),
                     Ok(other) => Err(crate::client_sync::Error::Returned(format!("addnode expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }

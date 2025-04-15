@@ -64,14 +64,14 @@ macro_rules! impl_client_v17__getpeerinfo {
 macro_rules! impl_client_v17__addnode {
     () => {
         impl Client {
-            pub fn add_node(&self, node: &str, command: AddNodeCommand) -> Result<()> {
+            pub fn add_node(&self, node: &str, command: AddNodeCommand) -> Result<AddNode> {
                 let params = &[node.into(), serde_json::to_value(command)?];
 
                 match self.call("addnode", params) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(serde_json::Value::Null) => Ok(AddNode),
+                    Ok(ref val) if val.is_null() => Ok(AddNode),
                     Ok(other) => {
-                        Err(crate::client_sync::Error::Returned(format!(
+                        Err(Error::Returned(format!(
                             "addnode expected null, got: {}", other
                         )))
                     },
@@ -87,11 +87,11 @@ macro_rules! impl_client_v17__addnode {
 macro_rules! impl_client_v17__clearbanned {
     () => {
         impl Client {
-            pub fn clear_banned(&self) -> Result<()> {
+            pub fn clear_banned(&self) -> Result<ClearBanned> {
                 match self.call("clearbanned", &[]) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
-                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("clearbanned expected null, got: {}", other))),
+                    Ok(serde_json::Value::Null) => Ok(ClearBanned),
+                    Ok(ref val) if val.is_null() => Ok(ClearBanned),
+                    Ok(other) => Err(Error::Returned(format!("clearbanned expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -110,7 +110,7 @@ macro_rules! impl_client_v17__setban {
                 command: SetBanCommand,
                 bantime: Option<i64>,
                 absolute: Option<bool>,
-            ) -> Result<()> {
+            ) -> Result<SetBan> {
                 let mut params: Vec<serde_json::Value> = vec![subnet.into(), serde_json::to_value(command)?,];
 
                 if bantime.is_some() || absolute.is_some() {
@@ -122,10 +122,10 @@ macro_rules! impl_client_v17__setban {
                 }
 
                 match self.call("setban", &params) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(serde_json::Value::Null) => Ok(SetBan),
+                    Ok(ref val) if val.is_null() => Ok(SetBan),
                     Ok(other) => {
-                        Err(crate::client_sync::Error::Returned(format!("setban expected null, got: {}", other)))
+                        Err(Error::Returned(format!("setban expected null, got: {}", other)))
                     },
                     Err(e) => Err(e.into()),
                 }
@@ -155,7 +155,7 @@ macro_rules! impl_client_v17__disconnectnode {
                 &self,
                 address: Option<&str>,
                 nodeid: Option<u64>,
-            ) -> Result<()> {
+            ) -> Result<DisconnectNode> {
                 let params: Vec<serde_json::Value> = match (address, nodeid) {
                     (Some(addr), None) => {
                         vec![addr.into()]
@@ -164,18 +164,18 @@ macro_rules! impl_client_v17__disconnectnode {
                         vec![serde_json::Value::String(String::new()), id.into()]
                     }
                     (Some(_), Some(_)) => {
-                        return Err(crate::client_sync::Error::DisconnectNodeArgsBoth);
+                        return Err(Error::DisconnectNodeArgsBoth);
                     }
                     (None, None) => {
-                        return Err(crate::client_sync::Error::DisconnectNodeArgsNone);
+                        return Err(Error::DisconnectNodeArgsNone);
                     }
                 };
 
                 match self.call("disconnectnode", &params) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(serde_json::Value::Null) => Ok(DisconnectNode),
+                    Ok(ref val) if val.is_null() => Ok(DisconnectNode),
                     Ok(other) => {
-                        Err(crate::client_sync::Error::Returned(format!("disconnectnode expected null, got: {}", other)))
+                        Err(Error::Returned(format!("disconnectnode expected null, got: {}", other)))
                     }
                     Err(e) => Err(e.into()),
                 }
@@ -189,7 +189,7 @@ macro_rules! impl_client_v17__disconnectnode {
 macro_rules! impl_client_v17__getconnectioncount {
     () => {
         impl Client {
-            pub fn get_connection_count(&self) -> Result<u64> {
+            pub fn get_connection_count(&self) -> Result<GetConnectionCount> {
                 self.call("getconnectioncount", &[])
             }
         }
@@ -201,12 +201,12 @@ macro_rules! impl_client_v17__getconnectioncount {
 macro_rules! impl_client_v17__ping {
     () => {
         impl Client {
-            pub fn ping(&self) -> Result<()> {
+            pub fn ping(&self) -> Result<Ping> {
                 match self.call("ping", &[]) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(serde_json::Value::Null) => Ok(Ping),
+                    Ok(ref val) if val.is_null() => Ok(Ping),
                     Ok(other) => {
-                        Err(crate::client_sync::Error::Returned(format!("ping expected null, got: {}", other)))
+                        Err(Error::Returned(format!("ping expected null, got: {}", other)))
                     }
                     Err(e) => Err(e.into()),
                 }
@@ -220,12 +220,12 @@ macro_rules! impl_client_v17__ping {
 macro_rules! impl_client_v17__setnetworkactive {
     () => {
         impl Client {
-            pub fn set_network_active(&self, state: bool) -> Result<()> {
+            pub fn set_network_active(&self, state: bool) -> Result<SetNetworkActive> {
                 match self.call("setnetworkactive", &[state.into()]) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(serde_json::Value::Null) => Ok(SetNetworkActive),
+                    Ok(ref val) if val.is_null() => Ok(SetNetworkActive),
                     Ok(other) => {
-                        Err(crate::client_sync::Error::Returned(format!("setnetworkactive expected null, got: {}", other)))
+                        Err(Error::Returned(format!("setnetworkactive expected null, got: {}", other)))
                     }
                     Err(e) => Err(e.into()),
                 }
@@ -245,7 +245,7 @@ macro_rules! impl_client_v17__importprivkey {
                 privkey: &PrivateKey,
                 label: Option<&str>,
                 rescan: Option<bool>,
-            ) -> Result<()> {
+            ) -> Result<ImportPrivKey> {
                 let privkey_wif = privkey.to_wif();
                 let mut params = vec![privkey_wif.into()];
 
@@ -258,9 +258,9 @@ macro_rules! impl_client_v17__importprivkey {
                 }
 
                 match self.call("importprivkey", &params) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
-                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("importprivkey expected null, got: {}", other))),
+                    Ok(serde_json::Value::Null) => Ok(ImportPrivKey),
+                    Ok(ref val) if val.is_null() => Ok(ImportPrivKey),
+                    Ok(other) => Err(Error::Returned(format!("importprivkey expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }

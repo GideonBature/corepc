@@ -272,6 +272,7 @@ pub use crate::{
         MempoolEntry, MempoolEntryError, MempoolEntryFees, MempoolEntryFeesError, Softfork,
         SoftforkType,
     },
+    v20::SetNetworkActive,
     v21::UnloadWallet,
     v22::{GetTxOut, GetTxOutError, Logging, ScriptPubkey},
     v23::SaveMempool,
