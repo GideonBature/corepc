@@ -513,3 +513,36 @@ fn wallet__import_pubkey() {
     let label = "imported_pubkey";
     node.client.import_pubkey(&pub_key, Some(label), Some(false)).expect("importpubkey failed");
 }
+
+#[test]
+fn wallet__import_wallet() {
+    let node = {
+        #[cfg(any(
+            feature = "v17",
+            feature = "v18",
+            feature = "v19",
+        ))] {
+            Node::with_wallet(Wallet::Default, &[])
+        }
+
+        #[cfg(not(any(
+            feature = "v17",
+            feature = "v18",
+            feature = "v19",
+        )))] {
+            let node = Node::with_wallet(Wallet::None, &["-deprecatedrpc=create_bdb"]);
+            let wallet_name = format!("legacy_source_dump_{}", rand::random::<u32>());
+            node.client.create_legacy_wallet(&wallet_name).expect("Failed to create  legacy source wallet");
+            node
+        }
+    };
+
+    node.client.new_address().expect("Failed to generate address before dump");
+
+    let dump_file_path = integration_test::random_tmp_file();
+
+    node.client.dump_wallet(&dump_file_path).expect("dump_wallet failed");
+    assert!(dump_file_path.exists(), "Dump file should exist after dumpwallet");
+
+    node.client.import_wallet(&dump_file_path).expect("importwallet RPC call failed");
+}

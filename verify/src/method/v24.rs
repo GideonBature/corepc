@@ -152,6 +152,7 @@ pub const METHODS: &[Method] = &[
     Method::new_bool("settxfee", "set_tx_fee"),
     Method::new_modelled("setwalletflag", "SetWalletFlag", "set_wallet_flag"),
     Method::new_modelled("signmessage", "SignMessage", "sign_message"),
+    Method::new_nothing("importwallet", "import_wallet"),
     Method::new_modelled(
         "signrawtransactionwithwallet",
         "SignRawTransactionWithWallet",

@@ -152,6 +152,7 @@ pub const METHODS: &[Method] = &[
     Method::new_no_model("listwalletdir", "ListWalletDir", "list_wallet_dir"),
     Method::new_modelled("listwallets", "ListWallets", "list_wallets"),
     Method::new_modelled("loadwallet", "LoadWallet", "load_wallet"),
+    Method::new_nothing("importwallet", "import_wallet"),
     Method::new_bool("lockunspent", "lock_unspent"),
     Method::new_nothing("removeprunedfunds", "remove_pruned_funds"),
     Method::new_modelled("rescanblockchain", "RescanBlockchain", "rescan_blockchain"),

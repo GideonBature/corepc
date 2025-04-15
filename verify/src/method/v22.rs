@@ -154,6 +154,7 @@ pub const METHODS: &[Method] = &[
         "SignRawTransactionWithWallet",
         "sign_raw_transaction_with_wallet",
     ),
+    Method::new_nothing("importwallet", "import_wallet"),
     Method::new_nothing("unloadwallet", "unload_wallet"),
     Method::new_no_model("upgradewallet", "UpgradeWalled", "upgrade_wallet"),
     Method::new_modelled(

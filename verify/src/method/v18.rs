@@ -151,6 +151,7 @@ pub const METHODS: &[Method] = &[
         "wallet_create_funded_psbt",
     ),
     Method::new_nothing("walletlock", "wallet_lock"),
+    Method::new_nothing("importwallet", "import_wallet"),
     Method::new_nothing("walletpassphrase", "wallet_passphrase"),
     Method::new_nothing("walletpassphrasechange", "wallet_passphrase_change"),
     Method::new_modelled("walletprocesspsbt", "WalletProcessPsbt", "wallet_process_psbt"),

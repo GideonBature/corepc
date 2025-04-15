@@ -152,6 +152,7 @@ pub const METHODS: &[Method] = &[
     Method::new_nothing("removeprunedfunds", "remove_pruned_funds"),
     Method::new_modelled("rescanblockchain", "RescanBlockchain", "rescan_blockchain"),
     Method::new_modelled("restorewallet", "RestoreWallet", "restore_wallet"),
+    Method::new_nothing("importwallet", "import_wallet"),
     Method::new_modelled("send", "Send", "send"),
     Method::new_modelled("sendall", "SendAll", "send_all"),
     Method::new_modelled("sendmany", "SendMany", "send_many"),

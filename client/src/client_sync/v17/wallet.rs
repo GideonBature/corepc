@@ -631,3 +631,21 @@ macro_rules! impl_client_v17__importpubkey {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `importwallet`
+#[macro_export]
+macro_rules! impl_client_v17__importwallet {
+    () => {
+        impl Client {
+            pub fn import_wallet(&self, filename: &Path) -> Result<()> {
+                let filename_str = filename.to_string_lossy();
+                match self.call("importwallet", &[filename_str.as_ref().into()]) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("importwallet expected null, got: {}", other))),
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}
