@@ -279,3 +279,12 @@ pub enum SetBanCommand {
     Add,
     Remove,
 }
+
+/// Args for the `lockunspent` method
+#[derive(Clone, Debug, PartialEq, Eq, Hash, Deserialize, Serialize)]
+pub struct LockUnspentOutput {
+    /// The transaction id
+    pub txid: Txid,
+    /// The output number
+    pub vout: u32,
+}

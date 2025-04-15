@@ -671,3 +671,162 @@ macro_rules! impl_client_v17__keypoolrefill {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `lockunspent`
+#[macro_export]
+macro_rules! impl_client_v17__lockunspent {
+    () => {
+        use crate::client_sync::LockUnspentOutput;
+        impl Client {
+            pub fn lock_unspent(
+                &self,
+                unlock: bool,
+                outputs: Option<&[LockUnspentOutput]>,
+                persistent: Option<bool>,
+            ) -> Result<bool> {
+                let mut params = vec![unlock.into()];
+
+                match outputs {
+                    Some(outs) => params.push(serde_json::to_value(outs)?),
+                    None => {
+                        if unlock {
+                            params.push(serde_json::Value::Array(vec![]));
+                        } else {
+                            return Err(crate::client_sync::Error::Returned("lockunspent requires specific outputs when locking (unlock=false)".to_string()));
+                        }
+                    }
+                }
+
+                if !unlock {
+                    if let Some(p) = persistent {
+                        if params.len() == 1 {
+                            params.push(serde_json::Value::Array(vec![]));
+                        }
+                        params.push(p.into());
+                    }
+                }
+                self.call("lockunspent", &params)
+            }
+        }
+    };
+}
+
+/// Implements Bitcoin Core JSON-RPC API method `removeprunedfunds`
+#[macro_export]
+macro_rules! impl_client_v17__removeprunedfunds {
+    () => {
+        impl Client {
+            pub fn remove_pruned_funds(&self, txid: Txid) -> Result<()> {
+                match self.call("removeprunedfunds", &[into_json(txid)?]) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("removeprunedfunds expected null, got: {}", other))),
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}
+
+/// Implements Bitcoin Core JSON-RPC API method `sethdseed`
+#[macro_export]
+macro_rules! impl_client_v17__sethdseed {
+    () => {
+        impl Client {
+            pub fn set_hd_seed(
+                &self,
+                new_keypool: Option<bool>,
+                seed: Option<&PrivateKey>,
+            ) -> Result<()> {
+                let mut params = vec![];
+
+                if new_keypool.is_some() || seed.is_some() {
+                    params.push(new_keypool.map_or(true.into(), |k| k.into()));
+                }
+
+                if let Some(s) = seed {
+                    params.push(s.to_wif().into());
+                }
+
+                match self.call("sethdseed", &params) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("sethdseed expected null, got: {}", other))),
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}
+
+/// Implements Bitcoin Core JSON-RPC API method `settxfee`
+#[macro_export]
+macro_rules! impl_client_v17__settxfee {
+    () => {
+        const SATS_PER_BTC_F64_SETTXFEE: f64 = 100_000_000.0;
+        fn fee_rate_to_rpc_arg_settxfee(fee_rate: bitcoin::FeeRate) -> f64 {
+            let sat_per_kwu = fee_rate.to_sat_per_kwu();
+            let sat_per_kvb = (sat_per_kwu as f64) * 4.0;
+            sat_per_kvb / SATS_PER_BTC_F64_SETTXFEE
+        }
+
+        impl Client {
+            pub fn set_tx_fee(&self, fee_rate: bitcoin::FeeRate) -> Result<bool> {
+                let amount_rpc_arg = fee_rate_to_rpc_arg_settxfee(fee_rate);
+
+                self.call("settxfee", &[amount_rpc_arg.into()])
+            }
+        }
+    };
+}
+
+/// Implements Bitcoin Core JSON-RPC API method `walletlock`
+#[macro_export]
+macro_rules! impl_client_v17__walletlock {
+    () => {
+        impl Client {
+            pub fn wallet_lock(&self) -> Result<()> {
+                match self.call("walletlock", &[]) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("walletlock expected null, got: {}", other))),
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}
+
+/// Implements Bitcoin Core JSON-RPC API method `walletpassphrase`
+#[macro_export]
+macro_rules! impl_client_v17__walletpassphrase {
+    () => {
+        impl Client {
+            pub fn wallet_passphrase(&self, passphrase: &str, timeout: u64) -> Result<()> {
+                match self.call("walletpassphrase", &[passphrase.into(), timeout.into()]) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("walletpassphrase expected null, got: {}", other))),
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}
+
+/// Implements Bitcoin Core JSON-RPC API method `walletpassphrasechange`
+#[macro_export]
+macro_rules! impl_client_v17__walletpassphrasechange {
+    () => {
+        impl Client {
+            pub fn wallet_passphrase_change(&self, old_passphrase: &str, new_passphrase: &str) -> Result<()> {
+                match self.call("walletpassphrasechange", &[old_passphrase.into(), new_passphrase.into()]) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("walletpassphrasechange expected null, got: {}", other))),
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}

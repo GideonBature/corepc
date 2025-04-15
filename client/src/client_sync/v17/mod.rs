@@ -134,6 +134,13 @@ crate::impl_client_v17__importprunedfunds!();
 crate::impl_client_v17__importpubkey!();
 crate::impl_client_v17__importwallet!();
 crate::impl_client_v17__keypoolrefill!();
+crate::impl_client_v17__lockunspent!();
+crate::impl_client_v17__removeprunedfunds!();
+crate::impl_client_v17__sethdseed!();
+crate::impl_client_v17__settxfee!();
+crate::impl_client_v17__walletlock!();
+crate::impl_client_v17__walletpassphrase!();
+crate::impl_client_v17__walletpassphrasechange!();
 
 /// Argument to the `Client::get_new_address_with_type` function.
 ///
@@ -157,4 +164,13 @@ impl fmt::Display for AddressType {
         };
         fmt::Display::fmt(s, f)
     }
+}
+
+const SATS_PER_BTC_F64: f64 = 100_000_000.0;
+
+pub fn fee_rate_to_rpc_arg(fee_rate: bitcoin::FeeRate) -> f64 {
+    let sat_per_kwu = fee_rate.to_sat_per_kwu();
+
+    let sat_per_kvb = (sat_per_kwu as f64) / 4.0;
+    sat_per_kvb / SATS_PER_BTC_F64
 }
