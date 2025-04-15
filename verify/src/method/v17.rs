@@ -85,15 +85,15 @@ pub const METHODS: &[Method] = &[
     Method::new_modelled("validateaddress", "ValidateAddress", "validate_address"),
     Method::new_bool("verifymessage", "verify_message"),
     // wallet
-    Method::new_nothing("abandontransaction", "abandon_transaction"),
-    Method::new_nothing("abortrescan", "abort_rescan"),
+    Method::new_no_model("abandontransaction", "AbandonTransaction", "abandon_transaction"),
+    Method::new_no_model("abortrescan", "AbortRescan", "abort_rescan"),
     Method::new_modelled("addmultisigaddress", "AddMultisigAddress", "add_multisig_address"),
-    Method::new_nothing("backupwallet", "backup_wallet"),
+    Method::new_no_model("backupwallet", "BackupWallet", "backup_wallet"),
     Method::new_modelled("bumpfee", "BumpFee", "bump_fee"),
     Method::new_modelled("createwallet", "CreateWallet", "create_wallet"),
     Method::new_modelled("dumpprivkey", "DumpPrivKey", "dump_priv_key"),
     Method::new_modelled("dumpwallet", "DumpWallet", "dump_wallet"),
-    Method::new_nothing("encryptwallet", "encrypt_wallet"),
+    Method::new_no_model("encryptwallet", "EncryptWallet", "encrypt_wallet"),
     Method::new_nothing("getaccount", "get_account"), // Deprecated
     Method::new_nothing("getaccountaddress", "get_account_address"), // Deprecated
     Method::new_nothing("getaddressbyaccount", "get_address_by_account"), // Deprecated
@@ -113,11 +113,11 @@ pub const METHODS: &[Method] = &[
     Method::new_modelled("getwalletinfo", "GetWalletInfo", "get_wallet_info"),
     Method::new_nothing("importaddress", "import_addressss"),
     Method::new_nothing("importmulti", "import_multi"),
-    Method::new_nothing("importprivkey", "import_priv_key"),
-    Method::new_nothing("importprunedfunds", "import_pruned_funds"),
-    Method::new_nothing("importpubkey", "import_pubkey"),
-    Method::new_nothing("importwallet", "import_walet"),
-    Method::new_nothing("keypoolrefill", "keypool_refill"),
+    Method::new_no_model("importprivkey", "ImportPrivKey", "import_priv_key"),
+    Method::new_no_model("importprunedfunds", "ImportPrunedFunds", "import_pruned_funds"),
+    Method::new_no_model("importpubkey", "ImportPubKey", "import_pubkey"),
+    Method::new_no_model("importwallet", "ImportWallet",  "import_walet"),
+    Method::new_no_model("keypoolrefill", "KeypoolRefill",  "keypool_refill"),
     Method::new_nothing("listaccounts", "list_accounts"), // Deprecated
     Method::new_modelled("listaddressgroupings", "ListAddressGroupings", "list_address_groupings"),
     Method::new_modelled("listlabels", "ListLabels", "list_labels"),
@@ -133,16 +133,16 @@ pub const METHODS: &[Method] = &[
     Method::new_modelled("listunspent", "ListUnspent", "list_unspent"),
     Method::new_modelled("listwallets", "ListWallets", "list_wallets"),
     Method::new_modelled("loadwallet", "LoadWallet", "load_wallet"),
-    Method::new_bool("lockunspent", "lock_unspent"),
+    Method::new_no_model("lockunspent", "LockUnspent",  "lock_unspent"),
     Method::new_bool("move", "move"),
-    Method::new_nothing("removeprunedfunds", "remove_pruned_funds"),
+    Method::new_no_model("removeprunedfunds", "RemovePrunedFunds",  "remove_pruned_funds"),
     Method::new_modelled("rescanblockchain", "RescanBlockchain", "rescan_blockchain"),
     Method::new_nothing("sendfrom", "send_from"), // Deprecated
     Method::new_modelled("sendmany", "SendMany", "send_many"),
     Method::new_modelled("sendtoaddress", "SendToAddress", "send_to_address"),
     Method::new_nothing("setaccount", "set_account"), // Deprecated
-    Method::new_nothing("sethdseed", "set_hd_seed"),
-    Method::new_bool("settxfee", "set_tx_fee"),
+    Method::new_no_model("sethdseed", "SetHdSeed", "set_hd_seed"),
+    Method::new_no_model("settxfee", "SetTxFee",  "set_tx_fee"),
     Method::new_modelled("signmessage", "SignMessage", "sign_message"),
     Method::new_modelled(
         "signrawtransactionwithwallet",
@@ -157,8 +157,8 @@ pub const METHODS: &[Method] = &[
         "wallet_create_funded_psbt",
     ),
     Method::new_nothing("walletlock", "wallet_lock"),
-    Method::new_nothing("walletpassphrase", "wallet_passphrase"),
-    Method::new_nothing("walletpassphrasechange", "wallet_passphrase_change"),
+    Method::new_no_model("walletpassphrase", "WalletPassPhrase", "wallet_passphrase"),
+    Method::new_no_model("walletpassphrasechange", "WalletPassPhraseChange", "wallet_passphrase_change"),
     Method::new_modelled("walletprocesspsbt", "WalletProcessPsbt", "wallet_process_psbt"),
     // zmq
     Method::new_no_model("getzmqnotifications", "GetZmqNotifications", "get_zmq_notifications"),

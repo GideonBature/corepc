@@ -471,11 +471,11 @@ macro_rules! impl_client_v17__walletprocesspsbt {
 macro_rules! impl_client_v17__abandontransaction {
     () => {
         impl Client {
-            pub fn abandon_transaction(&self, txid: Txid) -> Result<()> {
+            pub fn abandon_transaction(&self, txid: Txid) -> Result<AbandonTransaction> {
                 match self.call("abandontransaction", &[into_json(txid)?]) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
-                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("abandontransaction expected null, got: {}", other))),
+                    Ok(serde_json::Value::Null) => Ok(AbandonTransaction),
+                    Ok(ref val) if val.is_null() => Ok(AbandonTransaction),
+                    Ok(other) => Err(Error::Returned(format!("abandontransaction expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -488,11 +488,11 @@ macro_rules! impl_client_v17__abandontransaction {
 macro_rules! impl_client_v17__abortrescan {
     () => {
         impl Client {
-            pub fn abort_rescan(&self) -> Result<()> {
+            pub fn abort_rescan(&self) -> Result<AbortRescan> {
                 match self.call("abortrescan", &[]) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
-                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("abortrescan expected null, got: {}", other))),
+                    Ok(serde_json::Value::Null) => Ok(AbortRescan),
+                    Ok(ref val) if val.is_null() => Ok(AbortRescan),
+                    Ok(other) => Err(Error::Returned(format!("abortrescan expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -505,12 +505,12 @@ macro_rules! impl_client_v17__abortrescan {
 macro_rules! impl_client_v17__backupwallet {
     () => {
         impl Client {
-            pub fn backup_wallet(&self, destination: &Path) -> Result<()> {
+            pub fn backup_wallet(&self, destination: &Path) -> Result<BackupWallet> {
                 let dest_str = destination.to_string_lossy();
                 match self.call("backupwallet", &[dest_str.as_ref().into()]) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
-                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("backupwallet expected null, got: {}", other))),
+                    Ok(serde_json::Value::Null) => Ok(BackupWallet),
+                    Ok(ref val) if val.is_null() => Ok(BackupWallet),
+                    Ok(other) => Err(Error::Returned(format!("backupwallet expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -523,11 +523,11 @@ macro_rules! impl_client_v17__backupwallet {
 macro_rules! impl_client_v17__encryptwallet {
     () => {
         impl Client {
-            pub fn encrypt_wallet(&self, passphrase: &str) -> Result<()> {
+            pub fn encrypt_wallet(&self, passphrase: &str) -> Result<EncryptWallet> {
                 match self.call("encryptwallet", &[passphrase.into()]) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
-                    Ok(_) => Ok(()),
+                    Ok(serde_json::Value::Null) => Ok(EncryptWallet),
+                    Ok(ref val) if val.is_null() => Ok(EncryptWallet),
+                    Ok(other) => Err(Error::Returned(format!("encryptwallet v17-v19 expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -546,7 +546,7 @@ macro_rules! impl_client_v17__importaddress {
                 label: Option<&str>,
                 rescan: Option<bool>,
                 p2sh: Option<bool>,
-            ) -> Result<()> {
+            ) -> Result<ImportAddress> {
                 let mut params = vec![address_or_script.into()];
 
                 if label.is_some() || rescan.is_some() || p2sh.is_some() {
@@ -562,9 +562,9 @@ macro_rules! impl_client_v17__importaddress {
                 }
 
                 match self.call("importaddress", &params) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
-                    Ok(other) => Err(crate::client_sync::Error::Returned(format!(
+                    Ok(serde_json::Value::Null) => Ok(ImportAddress),
+                    Ok(ref val) if val.is_null() => Ok(ImportAddress),
+                    Ok(other) => Err(Error::Returned(format!(
                         "importaddress expected null, got: {}", other
                     ))),
                     Err(e) => Err(e.into()),
@@ -583,11 +583,11 @@ macro_rules! impl_client_v17__importprunedfunds {
                 &self,
                 raw_transaction: &str,
                 txout_proof: &str,
-            ) -> Result<()> {
+            ) -> Result<ImportPrunedFunds> {
                 match self.call("importprunedfunds", &[raw_transaction.into(), txout_proof.into()]) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
-                    Ok(other) => Err(crate::client_sync::Error::Returned(format!(
+                    Ok(serde_json::Value::Null) => Ok(ImportPrunedFunds),
+                    Ok(ref val) if val.is_null() => Ok(ImportPrunedFunds),
+                    Ok(other) => Err(Error::Returned(format!(
                         "importprunedfunds expected null, got: {}", other
                     ))),
                     Err(e) => Err(e.into()),
@@ -607,7 +607,7 @@ macro_rules! impl_client_v17__importpubkey {
                 pubkey: &PublicKey,
                 label: Option<&str>,
                 rescan: Option<bool>,
-            ) -> Result<()> {
+            ) -> Result<ImportPubKey> {
                 let pubkey_hex = pubkey.to_string();
                 let mut params = vec![pubkey_hex.into()];
 
@@ -620,9 +620,9 @@ macro_rules! impl_client_v17__importpubkey {
                 }
 
                 match self.call("importpubkey", &params) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
-                    Ok(other) => Err(crate::client_sync::Error::Returned(format!(
+                    Ok(serde_json::Value::Null) => Ok(ImportPubKey),
+                    Ok(ref val) if val.is_null() => Ok(ImportPubKey),
+                    Ok(other) => Err(Error::Returned(format!(
                         "importpubkey expected null, got: {}", other
                     ))),
                     Err(e) => Err(e.into()),
@@ -637,12 +637,12 @@ macro_rules! impl_client_v17__importpubkey {
 macro_rules! impl_client_v17__importwallet {
     () => {
         impl Client {
-            pub fn import_wallet(&self, filename: &Path) -> Result<()> {
+            pub fn import_wallet(&self, filename: &Path) -> Result<ImportWallet> {
                 let filename_str = filename.to_string_lossy();
                 match self.call("importwallet", &[filename_str.as_ref().into()]) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
-                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("importwallet expected null, got: {}", other))),
+                    Ok(serde_json::Value::Null) => Ok(ImportWallet),
+                    Ok(ref val) if val.is_null() => Ok(ImportWallet),
+                    Ok(other) => Err(Error::Returned(format!("importwallet expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -655,16 +655,16 @@ macro_rules! impl_client_v17__importwallet {
 macro_rules! impl_client_v17__keypoolrefill {
     () => {
         impl Client {
-            pub fn keypool_refill(&self, new_size: Option<usize>) -> Result<()> {
+            pub fn keypool_refill(&self, new_size: Option<usize>) -> Result<KeypoolRefill> {
                 let params = match new_size {
                     Some(size) => vec![size.into()],
                     None => vec![],
                 };
 
                 match self.call("keypoolrefill", &params) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
-                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("keypoolrefill expected null, got: {}", other))),
+                    Ok(serde_json::Value::Null) => Ok(KeypoolRefill),
+                    Ok(ref val) if val.is_null() => Ok(KeypoolRefill),
+                    Ok(other) => Err(Error::Returned(format!("keypoolrefill expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -683,7 +683,7 @@ macro_rules! impl_client_v17__lockunspent {
                 unlock: bool,
                 outputs: Option<&[LockUnspentOutput]>,
                 persistent: Option<bool>,
-            ) -> Result<bool> {
+            ) -> Result<LockUnspent> {
                 let mut params = vec![unlock.into()];
 
                 match outputs {
@@ -692,7 +692,7 @@ macro_rules! impl_client_v17__lockunspent {
                         if unlock {
                             params.push(serde_json::Value::Array(vec![]));
                         } else {
-                            return Err(crate::client_sync::Error::Returned("lockunspent requires specific outputs when locking (unlock=false)".to_string()));
+                            return Err(Error::Returned("lockunspent requires specific outputs when locking (unlock=false)".to_string()));
                         }
                     }
                 }
@@ -716,11 +716,11 @@ macro_rules! impl_client_v17__lockunspent {
 macro_rules! impl_client_v17__removeprunedfunds {
     () => {
         impl Client {
-            pub fn remove_pruned_funds(&self, txid: Txid) -> Result<()> {
+            pub fn remove_pruned_funds(&self, txid: Txid) -> Result<RemovePrunedFunds> {
                 match self.call("removeprunedfunds", &[into_json(txid)?]) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
-                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("removeprunedfunds expected null, got: {}", other))),
+                    Ok(serde_json::Value::Null) => Ok(RemovePrunedFunds),
+                    Ok(ref val) if val.is_null() => Ok(RemovePrunedFunds),
+                    Ok(other) => Err(Error::Returned(format!("removeprunedfunds expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -737,7 +737,7 @@ macro_rules! impl_client_v17__sethdseed {
                 &self,
                 new_keypool: Option<bool>,
                 seed: Option<&PrivateKey>,
-            ) -> Result<()> {
+            ) -> Result<SetHdSeed> {
                 let mut params = vec![];
 
                 if new_keypool.is_some() || seed.is_some() {
@@ -749,9 +749,9 @@ macro_rules! impl_client_v17__sethdseed {
                 }
 
                 match self.call("sethdseed", &params) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
-                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("sethdseed expected null, got: {}", other))),
+                    Ok(serde_json::Value::Null) => Ok(SetHdSeed),
+                    Ok(ref val) if val.is_null() => Ok(SetHdSeed),
+                    Ok(other) => Err(Error::Returned(format!("sethdseed expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -771,7 +771,7 @@ macro_rules! impl_client_v17__settxfee {
         }
 
         impl Client {
-            pub fn set_tx_fee(&self, fee_rate: bitcoin::FeeRate) -> Result<bool> {
+            pub fn set_tx_fee(&self, fee_rate: bitcoin::FeeRate) -> Result<SetTxFee> {
                 let amount_rpc_arg = fee_rate_to_rpc_arg_settxfee(fee_rate);
 
                 self.call("settxfee", &[amount_rpc_arg.into()])
@@ -785,11 +785,11 @@ macro_rules! impl_client_v17__settxfee {
 macro_rules! impl_client_v17__walletlock {
     () => {
         impl Client {
-            pub fn wallet_lock(&self) -> Result<()> {
+            pub fn wallet_lock(&self) -> Result<WalletLock> {
                 match self.call("walletlock", &[]) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
-                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("walletlock expected null, got: {}", other))),
+                    Ok(serde_json::Value::Null) => Ok(WalletLock),
+                    Ok(ref val) if val.is_null() => Ok(WalletLock),
+                    Ok(other) => Err(Error::Returned(format!("walletlock expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -802,11 +802,11 @@ macro_rules! impl_client_v17__walletlock {
 macro_rules! impl_client_v17__walletpassphrase {
     () => {
         impl Client {
-            pub fn wallet_passphrase(&self, passphrase: &str, timeout: u64) -> Result<()> {
+            pub fn wallet_passphrase(&self, passphrase: &str, timeout: u64) -> Result<WalletPassPhrase> {
                 match self.call("walletpassphrase", &[passphrase.into(), timeout.into()]) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
-                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("walletpassphrase expected null, got: {}", other))),
+                    Ok(serde_json::Value::Null) => Ok(WalletPassPhrase),
+                    Ok(ref val) if val.is_null() => Ok(WalletPassPhrase),
+                    Ok(other) => Err(Error::Returned(format!("walletpassphrase expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -819,11 +819,11 @@ macro_rules! impl_client_v17__walletpassphrase {
 macro_rules! impl_client_v17__walletpassphrasechange {
     () => {
         impl Client {
-            pub fn wallet_passphrase_change(&self, old_passphrase: &str, new_passphrase: &str) -> Result<()> {
+            pub fn wallet_passphrase_change(&self, old_passphrase: &str, new_passphrase: &str) -> Result<WalletPassPhraseChange> {
                 match self.call("walletpassphrasechange", &[old_passphrase.into(), new_passphrase.into()]) {
-                    Ok(serde_json::Value::Null) => Ok(()),
-                    Ok(ref val) if val.is_null() => Ok(()),
-                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("walletpassphrasechange expected null, got: {}", other))),
+                    Ok(serde_json::Value::Null) => Ok(WalletPassPhraseChange),
+                    Ok(ref val) if val.is_null() => Ok(WalletPassPhraseChange),
+                    Ok(other) => Err(Error::Returned(format!("walletpassphrasechange expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }

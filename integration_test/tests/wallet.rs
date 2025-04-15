@@ -321,7 +321,7 @@ fn wallet__abort_rescan() {
         feature = "v19",
     )))] {
         let success = result.expect("abortrescan RPC call failed (v20+");
-        assert!(!success, "abortrescan should return false when no scan is active (v20+)");
+        assert!(!success.0, "abortrescan should return false when no scan is active (v20+)");
     }
 }
 
@@ -355,7 +355,7 @@ fn wallet__encrypt_wallet() {
         feature="v18",
         feature="v19"))]
     {
-        encrypt_result.expect("encrypt_wallet RPC call failed (v17-v19)");
+        encrypt_result.0.expect("encrypt_wallet RPC call failed (v17-v19)");
     }
 
     #[cfg(not(any(
@@ -364,8 +364,8 @@ fn wallet__encrypt_wallet() {
         feature="v19")))]
     {
         let return_msg = encrypt_result.expect("encrypt_wallet RPC call failed (v20+)");
-        assert!(!return_msg.is_empty(), "encrypt_wallet should return a non-empty string (v20+)");
-        assert!(return_msg.contains("wallet encrypted"), "Return message should mention encryption");
+        assert!(!return_msg.0.is_empty(), "encrypt_wallet should return a non-empty string (v20+)");
+        assert!(return_msg.0.contains("wallet encrypted"), "Return message should mention encryption");
     }
 }
 
@@ -576,7 +576,7 @@ fn wallet__lock_unspent() {
     };
 
     let lock_result = node.client.lock_unspent(false, Some(&[lock_target.clone()]), None).expect("lock_unspent(false) call failed");
-    assert!(lock_result, "lock_unspent(false) should return true for success");
+    assert!(lock_result.0, "lock_unspent(false) should return true for success");
 }
 
 #[test]
@@ -659,7 +659,7 @@ fn wallet__set_tx_fee() {
 
     let result1 = node.client.set_tx_fee(target_fee_rate)
         .expect("settxfee with specific rate failed"); // This should now pass
-    assert!(result1, "settxfee should return true for success");
+    assert!(result1.0, "settxfee should return true for success");
 
     // Test Case 2: Disable custom fee (set to 0)
     // Setting to 0 is always allowed.
@@ -667,7 +667,7 @@ fn wallet__set_tx_fee() {
 
      let result2 = node.client.set_tx_fee(zero_fee_rate)
          .expect("settxfee with zero rate failed");
-     assert!(result2, "settxfee(0) should return true for success");
+     assert!(result2.0, "settxfee(0) should return true for success");
 }
 
 #[test]

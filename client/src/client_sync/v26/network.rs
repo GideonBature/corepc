@@ -29,7 +29,7 @@ macro_rules! impl_client_v26__addnode {
                 match self.call("addnode", &params) {
                     Ok(serde_json::Value::Null) => Ok(AddNode),
                     Ok(ref val) if val.is_null() => Ok(AddNode),
-                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("addnode expected null, got: {}", other))),
+                    Ok(other) => Err(Error::Returned(format!("addnode expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }

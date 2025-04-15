@@ -14,7 +14,7 @@
 macro_rules! impl_client_v20__abortrescan {
     () => {
         impl Client {
-            pub fn abort_rescan(&self) -> Result<bool> {
+            pub fn abort_rescan(&self) -> Result<AbortRescan> {
                 self.call("abortrescan", &[])
             }
         }
@@ -26,7 +26,7 @@ macro_rules! impl_client_v20__abortrescan {
 macro_rules! impl_client_v20__encryptwallet {
     () => {
         impl Client {
-            pub fn encrypt_wallet(&self, passphrase: &str) -> Result<String> {
+            pub fn encrypt_wallet(&self, passphrase: &str) -> Result<EncryptWallet> {
                 self.call("encryptwallet", &[passphrase.into()])
             }
         }

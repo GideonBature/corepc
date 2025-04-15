@@ -13,6 +13,7 @@ use bitcoin::{Amount, Block, BlockHash, PublicKey, Txid};
 use crate::client_sync::into_json;
 use crate::client_sync::{AddNodeCommand, SetBanCommand};
 use crate::types::v17::{AddNode, ClearBanned, SetBan, DisconnectNode, Ping, SetNetworkActive, ImportPrivKey, GetConnectionCount};
+use crate::types::v20::EncryptWallet;
 use crate::types::v25::*;
 
 #[rustfmt::skip]                // Keep public re-exports separate.

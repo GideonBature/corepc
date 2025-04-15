@@ -259,7 +259,7 @@ pub use crate::{
         PeerInfo, RescanBlockchain, ScriptPubkey, SendMany, SendRawTransaction, SendToAddress,
         SignErrorData, SignMessage, SignRawTransactionWithWallet, SoftforkReject,
         TransactionCategory, UploadTarget, VerifyTxOutProof, WalletCreateFundedPsbt,
-        WalletProcessPsbt, SaveMempool, VerifyChain,
+        WalletProcessPsbt, SaveMempool, VerifyChain, AbandonTransaction, BackupWallet, ImportAddress, ImportPrivKey, ImportPrunedFunds, ImportPubKey, ImportWallet, LockUnspent, RemovePrunedFunds, SetHdSeed, SetTxFee, WalletLock, WalletPassPhrase, WalletPassPhraseChange,
     },
     v18::{ActiveCommand, GetRpcInfo},
     v19::{
@@ -270,5 +270,5 @@ pub use crate::{
         MempoolEntry, MempoolEntryError, MempoolEntryFees, MempoolEntryFeesError, Softfork,
         SoftforkType,
     },
-    v20::{Logging, SetNetworkActive},
+    v20::{Logging, SetNetworkActive, AbortRescan},
 };
