@@ -546,3 +546,15 @@ fn wallet__import_wallet() {
 
     node.client.import_wallet(&dump_file_path).expect("importwallet RPC call failed");
 }
+
+#[test]
+fn wallet__keypool_refill() {
+    let node = Node::with_wallet(Wallet::Default, &[]);
+
+    // Test Case 1: Refill with default size
+    node.client.keypool_refill(None).expect("keypool_refill (default) failed");
+
+    // Test Case 2: Refill with specific size
+    let specific_size = 50usize;
+    node.client.keypool_refill(Some(specific_size)).expect("keypool_refill (specific) failed");
+}

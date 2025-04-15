@@ -649,3 +649,25 @@ macro_rules! impl_client_v17__importwallet {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `keypoolrefill`
+#[macro_export]
+macro_rules! impl_client_v17__keypoolrefill {
+    () => {
+        impl Client {
+            pub fn keypool_refill(&self, new_size: Option<usize>) -> Result<()> {
+                let params = match new_size {
+                    Some(size) => vec![size.into()],
+                    None => vec![],
+                };
+
+                match self.call("keypoolrefill", &params) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(ref val) if val.is_null() => Ok(()),
+                    Ok(other) => Err(crate::client_sync::Error::Returned(format!("keypoolrefill expected null, got: {}", other))),
+                    Err(e) => Err(e.into()),
+                }
+            }
+        }
+    };
+}
