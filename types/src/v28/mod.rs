@@ -251,6 +251,7 @@
 mod blockchain;
 mod mining;
 mod network;
+mod wallet;
 mod raw_transactions;
 
 #[doc(inline)]
@@ -279,8 +280,8 @@ pub use crate::{
         GetTransactionError, GetUnconfirmedBalance, GetWalletInfo, GetZmqNotifications,
         ListAddressGroupings, ListAddressGroupingsItem, ListBanned, ListLabels, ListLockUnspent,
         ListLockUnspentItem, ListReceivedByAddress, ListReceivedByAddressItem, ListSinceBlock,
-        ListSinceBlockTransaction, ListTransactions, ListTransactionsItem, ListUnspent,
-        ListUnspentItem, ListWallets, Locked, PeerInfo, RescanBlockchain, SendMany,
+        ListSinceBlockTransaction, /* ListTransactions, ListTransactionsItem, ListUnspent,
+        ListUnspentItem,*/ ListWallets, Locked, PeerInfo, RescanBlockchain, SendMany,
         SendRawTransaction, SendToAddress, SignErrorData, SignMessage,
         SignRawTransactionWithWallet, SoftforkReject, TransactionCategory, UploadTarget,
         VerifyTxOutProof, WalletCreateFundedPsbt, WalletProcessPsbt, PruneBlockchain, VerifyChain, AbandonTransaction, BackupWallet, ImportAddress, ImportPrivKey, ImportPrunedFunds, ImportPubKey, ImportWallet, KeypoolRefill, LockUnspent, RemovePrunedFunds, SetHdSeed, SetTxFee, WalletLock, WalletPassPhrase, WalletPassPhraseChange,
@@ -300,4 +301,5 @@ pub use crate::{
         CreateWallet, GetPrioritisedTransactions, GetTxOutSetInfo, GetTxOutSetInfoError,
         LoadWallet, PrioritisedTransaction, UnloadWallet,
     },
+    v28::wallet::{ListUnspent, ListUnspentItem, ListTransactions, ListTransactionsItem},
 };

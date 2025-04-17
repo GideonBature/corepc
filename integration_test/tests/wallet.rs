@@ -296,7 +296,12 @@ fn create_load_unload_wallet() {
 #[test]
 fn wallet__abandon_transaction() {
     let node = Node::with_wallet(Wallet::Default, &[]);
-    node.fund_wallet();
+    // node.fund_wallet(); // Fails due to timeout, needs fixing
+    let address = node.client.new_address().expect("failed to get new address");
+
+    for _ in 0..=11 {
+        node.client.generate_to_address(10, &address).expect("failed to generate to address");
+    }
 
     let (_, txid) = node.create_mempool_transaction();
     let _ = node.client.abandon_transaction(txid);
@@ -564,14 +569,19 @@ fn wallet__keypool_refill() {
 #[test]
 fn wallet__lock_unspent() {
     let node = Node::with_wallet(Wallet::Default, &[]);
-    node.fund_wallet();
+    node.fund_wallet(); // Fails due to timeout, needs fixing
+    // let address = node.client.new_address().expect("failed to get new address");
+
+    // for _ in 0..=11 {
+    //     node.client.generate_to_address(10, &address).expect("failed to generate to address");
+    // }
 
     let unspent_list = node.client.list_unspent().expect("listunspent failed during setup");
 
     let utxo_to_lock = unspent_list.0.get(0).expect("Wallet should have at least one UTXO after funding");
 
     let lock_target = LockUnspentOutput {
-        txid: Txid::from_str(&utxo_to_lock.txid).expect("Failed to parse Txid string from listunspent result"),
+        txid: utxo_to_lock.txid,
         vout: u32::try_from(utxo_to_lock.vout).expect("Failed to convert vout i64 to u32 (was negative?)"),
     };
 
@@ -607,7 +617,7 @@ fn wallet__remove_pruned_funds() {
     println!("tx list: {:#?}", tx_list);
     let tx_to_remove = tx_list.0.get(0).expect("Wallet should have at least one transaction");
 
-    let txid_to_remove = Txid::from_str(&tx_to_remove.txid).expect("Failed to parse Txid string");
+    let txid_to_remove = tx_to_remove.txid;
 
     let _ = node.client.remove_pruned_funds(txid_to_remove);
 }

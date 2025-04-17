@@ -14,7 +14,7 @@ use bitcoin::{Amount, Block, BlockHash, PublicKey, Txid};
 
 use crate::client_sync::into_json;
 use crate::client_sync::{AddNodeCommand, SetBanCommand};
-use crate::types::v17::{AddNode, ClearBanned, SetBan, DisconnectNode, Ping, ImportPrivKey, GetConnectionCount};
+use crate::types::v17::{AddNode, ClearBanned, SetBan, DisconnectNode, Ping, ImportPrivKey, GetConnectionCount, GenerateToAddress};
 use crate::types::v20::{SetNetworkActive, EncryptWallet};
 use crate::types::v28::*;
 
