@@ -109,7 +109,7 @@ pub const METHODS: &[Method] = &[
     ),
     Method::new_modelled("getwalletinfo", "GetWalletInfo", "get_wallet_info"),
     Method::new_nothing("importaddress", "import_addressss"),
-    Method::new_nothing("importmulti", "import_multi"),
+    Method::new_modelled("importmulti", "ImportMulti", "import_multi"),
     Method::new_no_model("importprivkey", "ImportPrivKey", "import_priv_key"),
     Method::new_no_model("importprunedfunds", "ImportPrunedFunds", "import_pruned_funds"),
     Method::new_no_model("importpubkey", "ImportPubKey", "import_pubkey"),

@@ -19,8 +19,10 @@ use bitcoin::address::{Address, NetworkChecked};
 use bitcoin::{Amount, Block, BlockHash, PublicKey, Txid};
 use serde::{Deserialize, Serialize};
 
-use crate::client_sync::into_json;
-use crate::client_sync::{AddNodeCommand, SetBanCommand};
+use crate::client_sync::{
+    into_json, AddNodeCommand, ImportMultiOptions, ImportMultiRequest, ScanAction, ScanObject,
+    SetBanCommand,
+};
 use crate::types::v17::*;
 
 #[rustfmt::skip]                // Keep public re-exports separate.
@@ -53,6 +55,7 @@ crate::impl_client_v17__verifytxoutproof!();
 crate::impl_client_v17__pruneblockchain!();
 crate::impl_client_v17__savemempool!();
 crate::impl_client_v17__verifychain!();
+crate::impl_client_v17__scantxoutset!();
 
 // == Control ==
 crate::impl_client_v17__getmemoryinfo!();
@@ -141,6 +144,7 @@ crate::impl_client_v17__settxfee!();
 crate::impl_client_v17__walletlock!();
 crate::impl_client_v17__walletpassphrase!();
 crate::impl_client_v17__walletpassphrasechange!();
+crate::impl_client_v17__importmulti!();
 
 /// Argument to the `Client::get_new_address_with_type` function.
 ///

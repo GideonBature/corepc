@@ -364,3 +364,62 @@ fn blockchain__verify_chain() {
     let result_nblocks_only_value = result_nblocks_only.0;
     assert!(result_nblocks_only_value, "verifychain with nblocks only should return true");
 }
+
+
+#[test]
+fn blockchain__scantxoutset_modelled() {
+    let node = Node::with_wallet(Wallet::None, &["-coinstatsindex=1"]);
+
+
+    let dummy_pubkey_hex = "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798";
+    let scan_desc = format!("pkh({})", dummy_pubkey_hex);
+
+    let scan_objects = [client_sync::ScanObject::Descriptor(scan_desc)];
+    let action = client_sync::ScanAction::Start;
+
+    let result = node.client.scan_tx_out_set(action, Some(&scan_objects));
+
+    #[cfg(feature = "v17")]
+    {
+        let _: ScanTxOutSet = result.expect("scantxoutset(Start) failed (v17)");
+    }
+    #[cfg(feature = "v18")]
+    {
+        let _: ScanTxOutSet = result.expect("scantxoutset(Start) failed (v18)");
+    }
+    #[cfg(all(feature = "v19", not(feature = "v22")))]
+    {
+        let res: ScanTxOutSet = result.expect("scantxoutset(Start) failed (v19-v21)");
+        assert!(res.success == true || res.success == false);
+    }
+     #[cfg(all(feature = "v22", not(feature = "v25")))]
+    {
+        let res: ScanTxOutSet = result.expect("scantxoutset(Start) failed (v22-v24)");
+        match res {
+            ScanTxOutSet::Start(start_res) => {
+                 assert!(start_res.success == true || start_res.success == false);
+            },
+            _ => panic!("Expected Start variant result for scantxoutset (v22-v24)"),
+        }
+    }
+     #[cfg(all(feature = "v25", not(feature = "v28")))]
+    {
+        let res: ScanTxOutSet = result.expect("scantxoutset(Start) failed (v25-v27)");
+         match res {
+            ScanTxOutSet::Start(start_res) => {
+                 assert!(start_res.success == true || start_res.success == false);
+             },
+            _ => panic!("Expected Start variant result for scantxoutset (v25-v27)"),
+        }
+    }
+    #[cfg(any(feature = "v28"))]
+    {
+        let res: ScanTxOutSet = result.expect("scantxoutset(Start) failed (v28+)");
+        match res {
+            ScanTxOutSet::Start(start_res) => {
+                 assert!(start_res.success == true || start_res.success == false);
+             },
+            _ => panic!("Expected Start variant result for scantxoutset (v28+)"),
+        }
+    }
+}

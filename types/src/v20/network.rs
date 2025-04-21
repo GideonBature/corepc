@@ -5,7 +5,6 @@
 //! Types for methods found under the `== Network ==` section of the API docs.
 //!
 /// These types do not implement `into_model` because no `rust-bitcoin` types needed yet.
-
 use serde::Deserialize;
 
 /// Result of JSON-RPC method `setnetworkactive`.

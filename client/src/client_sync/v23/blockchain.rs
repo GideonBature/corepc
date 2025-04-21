@@ -14,9 +14,7 @@
 macro_rules! impl_client_v23__savemempool {
     () => {
         impl Client {
-            pub fn save_mempool(&self) -> Result<SaveMempool> {
-                self.call("savemempool", &[])
-            }
+            pub fn save_mempool(&self) -> Result<SaveMempool> { self.call("savemempool", &[]) }
         }
     };
 }

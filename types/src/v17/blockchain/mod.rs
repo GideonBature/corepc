@@ -678,7 +678,7 @@ pub struct VerifyTxOutProof(pub Vec<String>);
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 pub struct PruneBlockchain(
     /// The height of the last block pruned.
-    pub i64
+    pub i64,
 );
 
 /// Result of JSON-RPC method `savemempool`.
@@ -709,3 +709,44 @@ pub struct SaveMempool;
 /// > Returns true|false (boolean) Verification finished successfully. If false, check debug.log for reason.
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 pub struct VerifyChain(pub bool);
+
+/// Result of JSON-RPC method `scantxoutset`.
+///
+/// > scantxoutset "action" ( [scanobjects,...] )
+/// >
+/// > Arguments:
+/// > 1. "action"                       (string, required) The action to execute
+/// "start" for starting a scan
+/// "abort" for aborting the current scan (returns true when abort was successful)
+/// "status" for progress report (in %) of the current scan
+/// > 2. "scanobjects"                  (array, required) Array of scan objects
+/// [                             Every scan object is either a string descriptor or an object:
+/// "descriptor",             (string, optional) An output descriptor
+/// {                         (object, optional) An object with output descriptor and metadata
+/// "desc": "descriptor",   (string, required) An output descriptor
+/// "range": n,             (numeric, optional) Up to what child index HD chains should be explored (default: 1000)
+/// },
+/// ...
+/// ]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+pub struct ScanTxOutSet {
+    /// The unspents
+    pub unspents: Vec<ScanTxOutSetUnspent>,
+    /// The total amount of all found unspent outputs in BTC
+    pub total_amount: f64,
+}
+
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+pub struct ScanTxOutSetUnspent {
+    /// The transaction id
+    pub txid: String,
+    /// The vout value
+    pub vout: u32,
+    /// The script key
+    #[serde(rename = "scriptPubKey")]
+    pub script_pub_key: String,
+    /// The total amount in BTC of unspent output
+    pub amount: f64,
+    /// Height of the unspent transaction output
+    pub height: u64,
+}

@@ -475,7 +475,10 @@ macro_rules! impl_client_v17__abandontransaction {
                 match self.call("abandontransaction", &[into_json(txid)?]) {
                     Ok(serde_json::Value::Null) => Ok(AbandonTransaction),
                     Ok(ref val) if val.is_null() => Ok(AbandonTransaction),
-                    Ok(other) => Err(Error::Returned(format!("abandontransaction expected null, got: {}", other))),
+                    Ok(other) => Err(Error::Returned(format!(
+                        "abandontransaction expected null, got: {}",
+                        other
+                    ))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -492,7 +495,8 @@ macro_rules! impl_client_v17__abortrescan {
                 match self.call("abortrescan", &[]) {
                     Ok(serde_json::Value::Null) => Ok(AbortRescan),
                     Ok(ref val) if val.is_null() => Ok(AbortRescan),
-                    Ok(other) => Err(Error::Returned(format!("abortrescan expected null, got: {}", other))),
+                    Ok(other) =>
+                        Err(Error::Returned(format!("abortrescan expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -510,7 +514,8 @@ macro_rules! impl_client_v17__backupwallet {
                 match self.call("backupwallet", &[dest_str.as_ref().into()]) {
                     Ok(serde_json::Value::Null) => Ok(BackupWallet),
                     Ok(ref val) if val.is_null() => Ok(BackupWallet),
-                    Ok(other) => Err(Error::Returned(format!("backupwallet expected null, got: {}", other))),
+                    Ok(other) =>
+                        Err(Error::Returned(format!("backupwallet expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -527,7 +532,10 @@ macro_rules! impl_client_v17__encryptwallet {
                 match self.call("encryptwallet", &[passphrase.into()]) {
                     Ok(serde_json::Value::Null) => Ok(EncryptWallet),
                     Ok(ref val) if val.is_null() => Ok(EncryptWallet),
-                    Ok(other) => Err(Error::Returned(format!("encryptwallet v17-v19 expected null, got: {}", other))),
+                    Ok(other) => Err(Error::Returned(format!(
+                        "encryptwallet v17-v19 expected null, got: {}",
+                        other
+                    ))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -584,11 +592,13 @@ macro_rules! impl_client_v17__importprunedfunds {
                 raw_transaction: &str,
                 txout_proof: &str,
             ) -> Result<ImportPrunedFunds> {
-                match self.call("importprunedfunds", &[raw_transaction.into(), txout_proof.into()]) {
+                match self.call("importprunedfunds", &[raw_transaction.into(), txout_proof.into()])
+                {
                     Ok(serde_json::Value::Null) => Ok(ImportPrunedFunds),
                     Ok(ref val) if val.is_null() => Ok(ImportPrunedFunds),
                     Ok(other) => Err(Error::Returned(format!(
-                        "importprunedfunds expected null, got: {}", other
+                        "importprunedfunds expected null, got: {}",
+                        other
                     ))),
                     Err(e) => Err(e.into()),
                 }
@@ -622,9 +632,8 @@ macro_rules! impl_client_v17__importpubkey {
                 match self.call("importpubkey", &params) {
                     Ok(serde_json::Value::Null) => Ok(ImportPubKey),
                     Ok(ref val) if val.is_null() => Ok(ImportPubKey),
-                    Ok(other) => Err(Error::Returned(format!(
-                        "importpubkey expected null, got: {}", other
-                    ))),
+                    Ok(other) =>
+                        Err(Error::Returned(format!("importpubkey expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -642,7 +651,8 @@ macro_rules! impl_client_v17__importwallet {
                 match self.call("importwallet", &[filename_str.as_ref().into()]) {
                     Ok(serde_json::Value::Null) => Ok(ImportWallet),
                     Ok(ref val) if val.is_null() => Ok(ImportWallet),
-                    Ok(other) => Err(Error::Returned(format!("importwallet expected null, got: {}", other))),
+                    Ok(other) =>
+                        Err(Error::Returned(format!("importwallet expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -688,13 +698,15 @@ macro_rules! impl_client_v17__lockunspent {
 
                 match outputs {
                     Some(outs) => params.push(serde_json::to_value(outs)?),
-                    None => {
+                    None =>
                         if unlock {
                             params.push(serde_json::Value::Array(vec![]));
                         } else {
-                            return Err(Error::Returned("lockunspent requires specific outputs when locking (unlock=false)".to_string()));
-                        }
-                    }
+                            return Err(Error::Returned(
+                                "lockunspent requires specific outputs when locking (unlock=false)"
+                                    .to_string(),
+                            ));
+                        },
                 }
 
                 if !unlock {
@@ -720,7 +732,10 @@ macro_rules! impl_client_v17__removeprunedfunds {
                 match self.call("removeprunedfunds", &[into_json(txid)?]) {
                     Ok(serde_json::Value::Null) => Ok(RemovePrunedFunds),
                     Ok(ref val) if val.is_null() => Ok(RemovePrunedFunds),
-                    Ok(other) => Err(Error::Returned(format!("removeprunedfunds expected null, got: {}", other))),
+                    Ok(other) => Err(Error::Returned(format!(
+                        "removeprunedfunds expected null, got: {}",
+                        other
+                    ))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -751,7 +766,8 @@ macro_rules! impl_client_v17__sethdseed {
                 match self.call("sethdseed", &params) {
                     Ok(serde_json::Value::Null) => Ok(SetHdSeed),
                     Ok(ref val) if val.is_null() => Ok(SetHdSeed),
-                    Ok(other) => Err(Error::Returned(format!("sethdseed expected null, got: {}", other))),
+                    Ok(other) =>
+                        Err(Error::Returned(format!("sethdseed expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -789,7 +805,8 @@ macro_rules! impl_client_v17__walletlock {
                 match self.call("walletlock", &[]) {
                     Ok(serde_json::Value::Null) => Ok(WalletLock),
                     Ok(ref val) if val.is_null() => Ok(WalletLock),
-                    Ok(other) => Err(Error::Returned(format!("walletlock expected null, got: {}", other))),
+                    Ok(other) =>
+                        Err(Error::Returned(format!("walletlock expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -802,11 +819,18 @@ macro_rules! impl_client_v17__walletlock {
 macro_rules! impl_client_v17__walletpassphrase {
     () => {
         impl Client {
-            pub fn wallet_passphrase(&self, passphrase: &str, timeout: u64) -> Result<WalletPassPhrase> {
+            pub fn wallet_passphrase(
+                &self,
+                passphrase: &str,
+                timeout: u64,
+            ) -> Result<WalletPassPhrase> {
                 match self.call("walletpassphrase", &[passphrase.into(), timeout.into()]) {
                     Ok(serde_json::Value::Null) => Ok(WalletPassPhrase),
                     Ok(ref val) if val.is_null() => Ok(WalletPassPhrase),
-                    Ok(other) => Err(Error::Returned(format!("walletpassphrase expected null, got: {}", other))),
+                    Ok(other) => Err(Error::Returned(format!(
+                        "walletpassphrase expected null, got: {}",
+                        other
+                    ))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -819,13 +843,45 @@ macro_rules! impl_client_v17__walletpassphrase {
 macro_rules! impl_client_v17__walletpassphrasechange {
     () => {
         impl Client {
-            pub fn wallet_passphrase_change(&self, old_passphrase: &str, new_passphrase: &str) -> Result<WalletPassPhraseChange> {
-                match self.call("walletpassphrasechange", &[old_passphrase.into(), new_passphrase.into()]) {
+            pub fn wallet_passphrase_change(
+                &self,
+                old_passphrase: &str,
+                new_passphrase: &str,
+            ) -> Result<WalletPassPhraseChange> {
+                match self
+                    .call("walletpassphrasechange", &[old_passphrase.into(), new_passphrase.into()])
+                {
                     Ok(serde_json::Value::Null) => Ok(WalletPassPhraseChange),
                     Ok(ref val) if val.is_null() => Ok(WalletPassPhraseChange),
-                    Ok(other) => Err(Error::Returned(format!("walletpassphrasechange expected null, got: {}", other))),
+                    Ok(other) => Err(Error::Returned(format!(
+                        "walletpassphrasechange expected null, got: {}",
+                        other
+                    ))),
                     Err(e) => Err(e.into()),
                 }
+            }
+        }
+    };
+}
+
+/// Implements Bitcoin Core JSON-RPC API method `importmulti`
+#[macro_export]
+macro_rules! impl_client_v17__importmulti {
+    () => {
+        impl Client {
+            pub fn import_multi(
+                &self,
+                requests: &[ImportMultiRequest],
+                options: Option<&ImportMultiOptions>,
+            ) -> Result<ImportMulti> {
+                let mut params = vec![serde_json::to_value(requests)?];
+
+                if let Some(opts) = options {
+                    if opts != &ImportMultiOptions::default() {
+                        params.push(serde_json::to_value(opts)?);
+                    }
+                }
+                self.call("importmulti", &params)
             }
         }
     };

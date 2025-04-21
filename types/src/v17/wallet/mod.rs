@@ -1197,3 +1197,48 @@ pub struct WalletPassPhrase;
 /// > null    (json null)
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 pub struct WalletPassPhraseChange;
+
+/// Result of JSON-RPC method `importmulti`.
+///
+/// > importmulti requests ( options )
+/// >
+/// > Arguments:
+/// > 1. requests                                                         (json array, required) Data to be imported
+/// [
+/// {                                                            (json object)
+/// "desc": "str",                                             (string, optional) Descriptor to import. If using descriptor, do not also provide address/scriptPubKey, scripts, or pubkeys
+/// "scriptPubKey": "<script>" | { "address":"<address>" },    (string / json, required) Type of scriptPubKey (string for script, json for address). Should not be provided if using a descriptor
+/// "timestamp": timestamp | "now",                            (integer / string, required) Creation time of the key expressed in UNIX epoch time,or the string "now" to substitute the current synced blockchain time. The timestamp of the oldest key will determine how far back blockchain rescans need to begin for missing wallet transactions. "now" can be specified to bypass scanning, for keys which are known to never have been used, and 0 can be specified to scan the entire blockchain. Blocks up to 2 hours before the earliest key creation time of all keys being imported by the importmulti call will be scanned.
+/// "redeemscript": "str",                                     (string, optional) Allowed only if the scriptPubKey is a P2SH or P2SH-P2WSH address/scriptPubKey
+/// "witnessscript": "str",                                    (string, optional) Allowed only if the scriptPubKey is a P2SH-P2WSH or P2WSH address/scriptPubKey
+/// "pubkeys": [                                               (json array, optional, default=[]) Array of strings giving pubkeys to import. They must occur in P2PKH or P2WPKH scripts. They are not required when the private key is also provided (see the "keys" argument).
+/// "pubKey",                                                (string)
+/// ...
+/// ],
+/// "keys": [                                                  (json array, optional, default=[]) Array of strings giving private keys to import. The corresponding public keys must occur in the output or redeemscript.
+/// "key",                                                   (string)
+/// ...
+/// ],
+/// "range": n or [n,n],                                       (numeric or array, optional) If a ranged descriptor is used, this specifies the end or the range (in the form [begin,end]) to import
+/// "internal": bool,                                          (boolean, optional, default=false) Stating whether matching outputs should be treated as not incoming payments (also known as change)
+/// "watchonly": bool,                                         (boolean, optional, default=false) Stating whether matching outputs should be considered watchonly.
+/// "label": "str",                                            (string, optional, default="") Label to assign to the address, only allowed with internal=false
+/// "keypool": bool,                                           (boolean, optional, default=false) Stating whether imported public keys should be added to the keypool for when users request new addresses. Only allowed when wallet private keys are disabled
+/// },
+/// ...
+/// ]
+/// 2. options                                                          (json object, optional) Options object that can be used to pass named arguments, listed below.
+/// Named Arguments:
+/// rescan    (boolean, optional, default=true) Scan the chain and mempool for wallet transactions after all imports.
+#[derive(Deserialize, Serialize, Debug, Clone, PartialEq, Eq)]
+pub struct ImportMulti(pub Vec<ImportMultiEntry>);
+
+/// Represents a single entry in the importmulti result array.
+#[derive(Deserialize, Serialize, Debug, Clone, PartialEq, Eq)]
+pub struct ImportMultiEntry {
+    pub success: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub warnings: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub error: Option<String>,
+}

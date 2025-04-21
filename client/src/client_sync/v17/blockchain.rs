@@ -370,3 +370,32 @@ macro_rules! impl_client_v17__verifychain {
         }
     };
 }
+
+/// Implements Bitcoin Core JSON-RPC API method `scantxoutset`
+#[macro_export]
+macro_rules! impl_client_v17__scantxoutset {
+    () => {
+        impl Client {
+            pub fn scan_tx_out_set(
+                &self,
+                action: ScanAction,
+                scan_objects: Option<&[ScanObject]>,
+            ) -> Result<ScanTxOutSet> {
+                let params = match action {
+                    ScanAction::Start => match scan_objects {
+                        Some(objects) =>
+                            vec![serde_json::to_value(action)?, serde_json::to_value(objects)?],
+                        None =>
+                            return Err(Error::Returned(
+                                "scan_objects required for 'start'".to_string(),
+                            )),
+                    },
+                    ScanAction::Abort | ScanAction::Status => {
+                        vec![serde_json::to_value(action)?]
+                    }
+                };
+                self.call("scantxoutset", &params)
+            }
+        }
+    };
+}

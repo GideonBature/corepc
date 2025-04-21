@@ -3,7 +3,7 @@
 //! A JSON-RPC client for testing against Bitcoin Core `v28`.
 //!
 //! We ignore option arguments unless they effect the shape of the returned JSON data.
-
+pub mod blockchain;
 pub mod raw_transactions;
 
 use std::collections::BTreeMap;
@@ -12,10 +12,15 @@ use std::path::Path;
 use bitcoin::address::{Address, NetworkChecked};
 use bitcoin::{Amount, Block, BlockHash, PublicKey, Txid};
 
-use crate::client_sync::into_json;
-use crate::client_sync::{AddNodeCommand, SetBanCommand};
-use crate::types::v17::{AddNode, ClearBanned, SetBan, DisconnectNode, Ping, ImportPrivKey, GetConnectionCount, GenerateToAddress};
-use crate::types::v20::{SetNetworkActive, EncryptWallet};
+use crate::client_sync::{
+    into_json, AddNodeCommand, ImportMultiOptions, ImportMultiRequest, ScanAction, ScanObject,
+    SetBanCommand,
+};
+use crate::types::v17::{
+    AddNode, ClearBanned, DisconnectNode, GenerateToAddress, GetConnectionCount, ImportMulti,
+    ImportPrivKey, Ping, SetBan,
+};
+use crate::types::v20::{EncryptWallet, SetNetworkActive};
 use crate::types::v28::*;
 
 #[rustfmt::skip]                // Keep public re-exports separate.
@@ -49,6 +54,7 @@ crate::impl_client_v17__verifytxoutproof!();
 crate::impl_client_v17__pruneblockchain!();
 crate::impl_client_v23__savemempool!();
 crate::impl_client_v17__verifychain!();
+crate::impl_client_v28__scantxoutset!();
 
 // == Control ==
 crate::impl_client_v17__getmemoryinfo!();
@@ -140,3 +146,4 @@ crate::impl_client_v17__settxfee!();
 crate::impl_client_v17__walletlock!();
 crate::impl_client_v17__walletpassphrase!();
 crate::impl_client_v17__walletpassphrasechange!();
+crate::impl_client_v17__importmulti!();

@@ -12,9 +12,14 @@ use std::path::Path;
 use bitcoin::address::{Address, NetworkChecked};
 use bitcoin::{Amount, Block, BlockHash, PublicKey, Txid};
 
-use crate::client_sync::into_json;
-use crate::client_sync::{AddNodeCommand, SetBanCommand};
-use crate::types::v17::{AddNode, ClearBanned, SetBan, DisconnectNode, Ping, SetNetworkActive, ImportPrivKey, GetConnectionCount};
+use crate::client_sync::{
+    into_json, AddNodeCommand, ImportMultiOptions, ImportMultiRequest, ScanAction, ScanObject,
+    SetBanCommand,
+};
+use crate::types::v17::{
+    AddNode, ClearBanned, DisconnectNode, GetConnectionCount, ImportMulti, ImportPrivKey, Ping,
+    SetBan, SetNetworkActive,
+};
 use crate::types::v20::*;
 use crate::types::v21::*;
 
@@ -48,6 +53,7 @@ crate::impl_client_v17__preciousblock!();
 crate::impl_client_v17__verifytxoutproof!();
 crate::impl_client_v17__savemempool!();
 crate::impl_client_v17__verifychain!();
+crate::impl_client_v19__scantxoutset!();
 
 // == Control ==
 crate::impl_client_v17__getmemoryinfo!();
@@ -137,3 +143,4 @@ crate::impl_client_v17__settxfee!();
 crate::impl_client_v17__walletlock!();
 crate::impl_client_v17__walletpassphrase!();
 crate::impl_client_v17__walletpassphrasechange!();
+crate::impl_client_v17__importmulti!();

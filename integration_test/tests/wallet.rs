@@ -6,10 +6,9 @@
 
 #[cfg(feature = "TODO")]
 use bitcoin::address::{Address, NetworkChecked};
-use bitcoin::{Amount, Txid};
+use bitcoin::Amount;
 use integration_test::{Node, NodeExt as _, Wallet, LockUnspentOutput};
 use node::AddressType;
-use std::str::FromStr;
 use node::vtype::*;             // All the version specific types.
 use node::mtype;
 use std::fs;
@@ -765,4 +764,49 @@ fn wallet__wallet_passphrase_change() {
     // Try unlocking with the NEW passphrase (should succeed)
     node.client.wallet_passphrase(new_passphrase, 60)
         .expect("walletpassphrase failed with NEW passphrase");
+}
+
+#[test]
+fn wallet__import_multi_modelled() {
+    use client::client_sync::*;
+    let node = {
+        #[cfg(any(
+            feature = "v17", feature = "v18", feature = "v19",
+        ))] {
+             Node::with_wallet(Wallet::Default, &[])
+        }
+        #[cfg(not(any(
+            feature = "v17", feature = "v18", feature = "v19",
+        )))] {
+             let node = Node::with_wallet(Wallet::None, &["-deprecatedrpc=create_bdb"]);
+             let wallet_name = format!("legacy_importmulti_min_{}", rand::random::<u32>());
+             node.client.create_legacy_wallet(&wallet_name)
+                 .expect("Failed to create legacy wallet for v20+ minimal test");
+             node
+         }
+    };
+
+    let dummy_script_hex = "76a914aabbccddeeff00112233445566778899aabbccdd88ac";
+
+    let request = ImportMultiRequest {
+        script_pub_key: Some(ImportMultiScriptPubKey::Script(dummy_script_hex.to_string())),
+        timestamp: ImportMultiTimestamp::Now("now".to_string()),
+        watchonly: Some(true),
+        ..Default::default()
+    };
+
+    use node::serde_json;
+    let _ = serde_json::to_string(&[request.clone()]).unwrap();
+
+    let options = ImportMultiOptions {
+        rescan: Some(false),
+    };
+
+    let result = node.client.import_multi(&[request], Some(&options));
+
+    let result_vec = result.expect("importmulti RPC call failed");
+
+    assert_eq!(result_vec.0.len(), 1, "Expected one result entry");
+    assert!(result_vec.0[0].success, "Import request should have succeeded");
+    assert!(result_vec.0[0].error.is_none(), "Import request should not have an error");
 }

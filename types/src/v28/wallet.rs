@@ -4,8 +4,8 @@
 //!
 //! Types for methods found under the `== Wallet ==` section of the API docs.
 
-use bitcoin::{Address, Amount, ScriptBuf, Txid, BlockHash, SignedAmount};
 use bitcoin::address::NetworkUnchecked;
+use bitcoin::{Address, Amount, BlockHash, ScriptBuf, SignedAmount, Txid};
 use serde::{Deserialize, Serialize};
 extern crate bitcoin;
 
@@ -110,11 +110,22 @@ pub struct ListTransactionsItem {
 
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
-pub enum TransactionCategory { Send, Receive, Generate, Immature, Orphan, Move }
+pub enum TransactionCategory {
+    Send,
+    Receive,
+    Generate,
+    Immature,
+    Orphan,
+    Move,
+}
 
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
-pub enum Bip125Replaceable { Yes, No, Unknown }
+pub enum Bip125Replaceable {
+    Yes,
+    No,
+    Unknown,
+}
 
 // Ensure you have the top-level struct too
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]

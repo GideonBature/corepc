@@ -70,11 +70,8 @@ macro_rules! impl_client_v17__addnode {
                 match self.call("addnode", params) {
                     Ok(serde_json::Value::Null) => Ok(AddNode),
                     Ok(ref val) if val.is_null() => Ok(AddNode),
-                    Ok(other) => {
-                        Err(Error::Returned(format!(
-                            "addnode expected null, got: {}", other
-                        )))
-                    },
+                    Ok(other) =>
+                        Err(Error::Returned(format!("addnode expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -91,7 +88,8 @@ macro_rules! impl_client_v17__clearbanned {
                 match self.call("clearbanned", &[]) {
                     Ok(serde_json::Value::Null) => Ok(ClearBanned),
                     Ok(ref val) if val.is_null() => Ok(ClearBanned),
-                    Ok(other) => Err(Error::Returned(format!("clearbanned expected null, got: {}", other))),
+                    Ok(other) =>
+                        Err(Error::Returned(format!("clearbanned expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -111,7 +109,8 @@ macro_rules! impl_client_v17__setban {
                 bantime: Option<i64>,
                 absolute: Option<bool>,
             ) -> Result<SetBan> {
-                let mut params: Vec<serde_json::Value> = vec![subnet.into(), serde_json::to_value(command)?,];
+                let mut params: Vec<serde_json::Value> =
+                    vec![subnet.into(), serde_json::to_value(command)?];
 
                 if bantime.is_some() || absolute.is_some() {
                     params.push(bantime.map_or(serde_json::Value::Null, |t| t.into()));
@@ -124,9 +123,8 @@ macro_rules! impl_client_v17__setban {
                 match self.call("setban", &params) {
                     Ok(serde_json::Value::Null) => Ok(SetBan),
                     Ok(ref val) if val.is_null() => Ok(SetBan),
-                    Ok(other) => {
-                        Err(Error::Returned(format!("setban expected null, got: {}", other)))
-                    },
+                    Ok(other) =>
+                        Err(Error::Returned(format!("setban expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -139,9 +137,7 @@ macro_rules! impl_client_v17__setban {
 macro_rules! impl_client_v17__listbanned {
     () => {
         impl Client {
-            pub fn list_banned(&self) -> Result<ListBanned> {
-                self.call("listbanned", &[])
-            }
+            pub fn list_banned(&self) -> Result<ListBanned> { self.call("listbanned", &[]) }
         }
     };
 }
@@ -174,9 +170,10 @@ macro_rules! impl_client_v17__disconnectnode {
                 match self.call("disconnectnode", &params) {
                     Ok(serde_json::Value::Null) => Ok(DisconnectNode),
                     Ok(ref val) if val.is_null() => Ok(DisconnectNode),
-                    Ok(other) => {
-                        Err(Error::Returned(format!("disconnectnode expected null, got: {}", other)))
-                    }
+                    Ok(other) => Err(Error::Returned(format!(
+                        "disconnectnode expected null, got: {}",
+                        other
+                    ))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -205,9 +202,8 @@ macro_rules! impl_client_v17__ping {
                 match self.call("ping", &[]) {
                     Ok(serde_json::Value::Null) => Ok(Ping),
                     Ok(ref val) if val.is_null() => Ok(Ping),
-                    Ok(other) => {
-                        Err(Error::Returned(format!("ping expected null, got: {}", other)))
-                    }
+                    Ok(other) =>
+                        Err(Error::Returned(format!("ping expected null, got: {}", other))),
                     Err(e) => Err(e.into()),
                 }
             }
@@ -224,9 +220,10 @@ macro_rules! impl_client_v17__setnetworkactive {
                 match self.call("setnetworkactive", &[state.into()]) {
                     Ok(serde_json::Value::Null) => Ok(SetNetworkActive),
                     Ok(ref val) if val.is_null() => Ok(SetNetworkActive),
-                    Ok(other) => {
-                        Err(Error::Returned(format!("setnetworkactive expected null, got: {}", other)))
-                    }
+                    Ok(other) => Err(Error::Returned(format!(
+                        "setnetworkactive expected null, got: {}",
+                        other
+                    ))),
                     Err(e) => Err(e.into()),
                 }
             }
