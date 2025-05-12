@@ -19,7 +19,7 @@ use crate::types::v28::*;
 pub use crate::client_sync::{
     v17::{
         AddNodeCommand, ImportMultiRequest, ImportMultiScriptPubKey, ImportMultiTimestamp, Input, Output, SetBanCommand, TemplateRequest, TemplateRules,
-        WalletCreateFundedPsbtInput,
+        WalletCreateFundedPsbtInput, ScanAction, ScanObject,
     },
     v21::ImportDescriptorsRequest,
     v23::AddressType,
@@ -51,8 +51,10 @@ crate::impl_client_v26__get_tx_out_set_info!();
 crate::impl_client_v17__precious_block!();
 crate::impl_client_v17__prune_blockchain!();
 crate::impl_client_v23__save_mempool!();
+crate::impl_client_v17__scan_tx_out_set!();
 crate::impl_client_v17__verify_chain!();
 crate::impl_client_v17__verify_tx_out_proof!();
+
 
 // == Control ==
 crate::impl_client_v17__get_memory_info!();

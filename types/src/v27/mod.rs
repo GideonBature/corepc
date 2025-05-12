@@ -56,7 +56,7 @@
 //! | pruneblockchain                    | version         |                                        |
 //! | savemempool                        | version         |                                        |
 //! | scanblocks                         | version + model | TODO                                   |
-//! | scantxoutset                       | omitted         | API marked as experimental             |
+//! | scantxoutset                       | version + model | API marked as experimental             |
 //! | verifychain                        | version         |                                        |
 //! | verifytxoutproof                   | version + model |                                        |
 //!
@@ -279,7 +279,7 @@ pub use crate::{
         SignMessage, SignMessageWithPrivKey, SignRawTransaction, SignRawTransactionError,
         SoftforkReject, TestMempoolAccept, TransactionCategory, UploadTarget, ValidateAddress,
         ValidateAddressError, VerifyChain, VerifyMessage, VerifyTxOutProof, WalletCreateFundedPsbt,
-        WalletCreateFundedPsbtError, WalletProcessPsbt, WitnessUtxo,
+        WalletCreateFundedPsbtError, WalletProcessPsbt, WitnessUtxo, ScanTxOutSetError,
     },
     v18::{
         ActiveCommand, AnalyzePsbt, AnalyzePsbtError, AnalyzePsbtInput, AnalyzePsbtInputMissing,
@@ -308,6 +308,7 @@ pub use crate::{
         TaprootBip32Deriv, TaprootLeaf, TaprootScript, TaprootScriptPathSig,
     },
     v25::{GenerateBlock, GenerateBlockError, GetBlockStats},
+    v25::{ScanTxOutSet, ScanTxOutSetStart, ScanTxOutSetStatus, ScanTxOutSetUnspent},
     v26::{
         CreateWallet, DescriptorProcessPsbt, DescriptorProcessPsbtError, GetBalances,
         GetBalancesError, GetPeerInfo, GetPrioritisedTransactions, GetTransaction,

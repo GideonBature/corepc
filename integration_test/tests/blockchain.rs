@@ -7,7 +7,7 @@
 use integration_test::{Node, NodeExt as _, Wallet};
 use node::client::client_sync;
 use node::vtype::*;             // All the version specific types.
-use node::mtype;
+use node::{mtype, ScanAction, ScanObject};
 
 #[test]
 fn blockchain__get_best_block_hash__modelled() {
@@ -300,6 +300,27 @@ fn blockchain__savemempool() {
     {
         let _: Result<SaveMempool, _> = node.client.save_mempool();
     }
+}
+
+#[test]
+fn blockchain__scan_tx_out_set_modelled() {
+    let node = match () {
+        #[cfg(feature = "v21_and_below")]
+        () => Node::with_wallet(Wallet::None, &[]),
+        #[cfg(not(feature = "v21_and_below"))]
+        () => Node::with_wallet(Wallet::None, &["-coinstatsindex=1"])
+    };
+
+    let dummy_pubkey_hex = "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798";
+    let scan_desc = format!("pkh({})", dummy_pubkey_hex);
+
+    let scan_objects: ScanObject = ScanObject::Descriptor(scan_desc);
+    let action: ScanAction = ScanAction::Start;
+
+    let json: ScanTxOutSet = node.client.scan_tx_out_set(action, &[scan_objects]).expect("scantxoutset");
+
+    let model: Result<mtype::ScanTxOutSet, ScanTxOutSetError> = json.into_model();
+    model.unwrap();
 }
 
 #[test]

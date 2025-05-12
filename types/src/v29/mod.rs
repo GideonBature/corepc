@@ -298,7 +298,7 @@ pub use crate::{
         SignMessage, SignMessageWithPrivKey, SignRawTransaction, SignRawTransactionError,
         TestMempoolAccept, TransactionCategory, UploadTarget, ValidateAddress,
         ValidateAddressError, VerifyChain, VerifyMessage, VerifyTxOutProof, WalletCreateFundedPsbt,
-        WalletCreateFundedPsbtError, WalletProcessPsbt, WitnessUtxo,
+        WalletCreateFundedPsbtError, WalletProcessPsbt, WitnessUtxo, ScanTxOutSetError,
     },
     v18::{
         ActiveCommand, AnalyzePsbt, AnalyzePsbtError, AnalyzePsbtInput, AnalyzePsbtInputMissing,
@@ -336,6 +336,6 @@ pub use crate::{
     v28::{
         GetNetworkInfo, GetPeerInfo, GetTransaction, Logging, SubmitPackage, SubmitPackageError,
         SubmitPackageTxResult, SubmitPackageTxResultError, SubmitPackageTxResultFees,
-        SubmitPackageTxResultFeesError,
+        SubmitPackageTxResultFeesError, ScanTxOutSet, ScanTxOutSetStart, ScanTxOutSetStatus, ScanTxOutSetUnspent,
     },
 };

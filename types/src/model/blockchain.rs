@@ -621,3 +621,57 @@ pub struct ReceiveActivity {
     /// The ScriptPubKey, converted to `model::ScriptPubkey`.
     pub output_spk: ScriptPubkey,
 }
+
+/// Models the result of the JSON-RPC method `scantxoutset`.
+#[derive(Deserialize, Debug, Clone, PartialEq)]
+#[serde(untagged)]
+pub enum ScanTxOutSet {
+    Start(ScanTxOutSetStart),
+    Abort(bool),
+    Status(Option<ScanTxOutSetStatus>),
+}
+
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+pub struct ScanTxOutSetStart {
+    /// Whether the scan is completed. For v19 onwards.
+    pub success: Option<bool>,
+    /// The number of unspent transaction outputs scanned. For v19 onwards.
+    pub txouts: Option<u64>,
+    /// The current block height (index). For v19 onwards.
+    pub height: Option<u64>,
+    /// The hash of the block at the tip of the chain. For v19 onwards.
+    pub bestblock: Option<BlockHash>,
+    /// The unspents
+    pub unspents: Vec<ScanTxOutSetUnspent>,
+    /// The total amount of all found unspent outputs in BTC
+    pub total_amount: Amount,
+}
+
+#[derive(Deserialize, Debug, Clone, PartialEq)]
+pub struct ScanTxOutSetStatus {
+    /// Approximate percent complete
+    pub progress: f64,
+}
+
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+pub struct ScanTxOutSetUnspent {
+    /// The transaction id
+    pub txid: Txid,
+    /// The vout value
+    pub vout: u32,
+    /// The script key
+    #[serde(rename = "scriptPubKey")]
+    pub script_pubkey: ScriptBuf,
+    /// An output descriptor. For v18 onwards.
+    pub desc: Option<String>,
+    /// The total amount in BTC of unspent output
+    pub amount: Amount,
+    /// Whether this is a coinbase output. For v25 onwards.
+    pub coinbase: Option<bool>,
+    /// Height of the unspent transaction output
+    pub height: u64,
+    /// Blockhash of the unspent transaction output. For v28 onwards.
+    pub blockhash: Option<BlockHash>,
+    /// Number of confirmations of the unspent transaction output when the scan was done. For v28 onwards.
+    pub confirmations: Option<u64>,
+}

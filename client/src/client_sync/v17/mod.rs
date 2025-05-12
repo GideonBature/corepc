@@ -48,6 +48,7 @@ crate::impl_client_v17__get_tx_out_set_info!();
 crate::impl_client_v17__precious_block!();
 crate::impl_client_v17__prune_blockchain!();
 crate::impl_client_v17__save_mempool!();
+crate::impl_client_v17__scan_tx_out_set!();
 crate::impl_client_v17__verify_chain!();
 crate::impl_client_v17__verify_tx_out_proof!();
 
@@ -301,4 +302,25 @@ impl Serialize for ImportMultiTimestamp {
             ImportMultiTimestamp::Time(t) => serializer.serialize_u64(*t),
         }
     }
+}
+
+/// Args for the `scantxoutset`
+///
+/// Represents the action for the `scantxoutset` RPC call.
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum ScanAction {
+    Start,
+    Abort,
+    Status,
+}
+
+/// Represents a scan object for scantxoutset (descriptor string or object).
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[serde(untagged)]
+pub enum ScanObject {
+    /// Plain descriptor string
+    Descriptor(String),
+    /// Object containing descriptor and optional range
+    WithDesc { desc: String },
 }

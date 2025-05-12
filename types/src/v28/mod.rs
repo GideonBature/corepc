@@ -56,7 +56,7 @@
 //! | pruneblockchain                    | version         |                                        |
 //! | savemempool                        | version         |                                        |
 //! | scanblocks                         | version + model | TODO                                   |
-//! | scantxoutset                       | omitted         | API marked as experimental             |
+//! | scantxoutset                       | version + model | API marked as experimental             |
 //! | verifychain                        | version         |                                        |
 //! | verifytxoutproof                   | version + model |                                        |
 //!
@@ -259,7 +259,9 @@ mod wallet;
 
 #[doc(inline)]
 pub use self::{
-    blockchain::GetBlockchainInfo,
+    blockchain::{
+        GetBlockchainInfo, ScanTxOutSet, ScanTxOutSetStart, ScanTxOutSetStatus, ScanTxOutSetUnspent,
+    },
     control::Logging,
     mining::GetMiningInfo,
     network::GetNetworkInfo,
@@ -300,7 +302,7 @@ pub use crate::{
         SignMessage, SignMessageWithPrivKey, SignRawTransaction, SignRawTransactionError,
         SoftforkReject, TestMempoolAccept, TransactionCategory, UploadTarget, ValidateAddress,
         ValidateAddressError, VerifyChain, VerifyMessage, VerifyTxOutProof, WalletCreateFundedPsbt,
-        WalletCreateFundedPsbtError, WalletProcessPsbt, WitnessUtxo,
+        WalletCreateFundedPsbtError, WalletProcessPsbt, WitnessUtxo, ScanTxOutSetError,
     },
     v18::{
         ActiveCommand, AnalyzePsbt, AnalyzePsbtError, AnalyzePsbtInput, AnalyzePsbtInputMissing,
