@@ -30,6 +30,15 @@ fn network__add_node() {
 }
 
 #[test]
+fn network__clear_banned() {
+    let node = Node::with_wallet(Wallet::None, &[]);
+    let dummy_subnet = "192.0.2.2";
+
+    node.client.set_ban(dummy_subnet, SetBanCommand::Add).expect("setban add");
+    node.client.clear_banned().expect("clearbanned");
+}
+
+#[test]
 fn network__get_added_node_info() {
     let node = Node::with_wallet(Wallet::None, &[]);
     let _: GetAddedNodeInfo = node.client.get_added_node_info().expect("getaddednodeinfo");

@@ -71,6 +71,7 @@ crate::impl_client_v17__submitblock!();
 
 // == Network ==
 crate::impl_client_v17__addnode!();
+crate::impl_client_v17__clearbanned!();
 crate::impl_client_v17__getaddednodeinfo!();
 crate::impl_client_v17__getnettotals!();
 crate::impl_client_v17__getnetworkinfo!();

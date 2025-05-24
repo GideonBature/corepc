@@ -25,6 +25,22 @@ macro_rules! impl_client_v17__addnode {
     };
 }
 
+/// Implements Bitcoin Core JSON-RPC API method `clearbanned`
+#[macro_export]
+macro_rules! impl_client_v17__clearbanned {
+    () => {
+        impl Client {
+            pub fn clear_banned(&self) -> Result<()> {
+                match self.call("clearbanned", &[]) {
+                    Ok(serde_json::Value::Null) => Ok(()),
+                    Ok(res) => Err(Error::Returned(res.to_string())),
+                    Err(err) => Err(err.into()),
+                }
+            }
+        }
+    };
+}
+
 /// Implements Bitcoin Core JSON-RPC API method `getaddednodeinfo`
 #[macro_export]
 macro_rules! impl_client_v17__getaddednodeinfo {
