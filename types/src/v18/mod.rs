@@ -233,7 +233,10 @@ mod wallet;
 
 #[doc(inline)]
 pub use self::{
-    blockchain::{GetMempoolEntry, MempoolEntry, ScanTxOutSet, ScanTxOutSetStart, ScanTxOutSetStatus, ScanTxOutSetUnspent},
+    blockchain::{
+        GetMempoolEntry, MempoolEntry, ScanTxOutSet, ScanTxOutSetStart, ScanTxOutSetStatus,
+        ScanTxOutSetUnspent,
+    },
     control::{ActiveCommand, GetRpcInfo},
     network::{GetNodeAddresses, GetPeerInfo, NodeAddress, PeerInfo},
     raw_transactions::{
@@ -277,10 +280,11 @@ pub use crate::v17::{
     ListTransactionsItemError, ListUnspentItemError, ListWallets, LoadWallet, LockUnspent, Locked,
     Logging, MapMempoolEntryError, MempoolAcceptance, MempoolEntryError, MempoolEntryFees,
     MempoolEntryFeesError, PruneBlockchain, PsbtInput, PsbtOutput, PsbtScript, RawTransaction,
-    RawTransactionError, RawTransactionInput, RawTransactionOutput, RescanBlockchain, SendMany,
-    SendRawTransaction, SendToAddress, SetNetworkActive, SetTxFee, SignFail, SignFailError,
-    SignMessage, SignMessageWithPrivKey, SignRawTransaction, SignRawTransactionError, Softfork,
-    SoftforkReject, TestMempoolAccept, TransactionCategory, UploadTarget, ValidateAddress,
-    ValidateAddressError, VerifyChain, VerifyMessage, VerifyTxOutProof, WalletCreateFundedPsbt,
-    WalletCreateFundedPsbtError, WalletProcessPsbt, WitnessUtxo, ScanTxOutSetError,
+    RawTransactionError, RawTransactionInput, RawTransactionOutput, RescanBlockchain,
+    ScanTxOutSetError, SendMany, SendRawTransaction, SendToAddress, SetNetworkActive, SetTxFee,
+    SignFail, SignFailError, SignMessage, SignMessageWithPrivKey, SignRawTransaction,
+    SignRawTransactionError, Softfork, SoftforkReject, TestMempoolAccept, TransactionCategory,
+    UploadTarget, ValidateAddress, ValidateAddressError, VerifyChain, VerifyMessage,
+    VerifyTxOutProof, WalletCreateFundedPsbt, WalletCreateFundedPsbtError, WalletProcessPsbt,
+    WitnessUtxo,
 };
